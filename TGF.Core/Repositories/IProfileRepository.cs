@@ -9,7 +9,7 @@ namespace TGF.Core.Repositories
 {
     public interface IProfileRepository
     {
-        Task AddAsync(Profile profile);
+        Task<Profile> AddAsync(Profile profile);
         Task<Profile> GetAsync(int id);
         Task<IEnumerable<Profile>> BrowseAllAsync();
         Task UpdateAsync(Profile profile);
