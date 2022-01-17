@@ -20,8 +20,8 @@ namespace TGF.Infrastructure.Services
 
         public async Task<ProfileDTO> AddAsync(ProfileDTO profile)
         {
-            var s = await _profileRepository.AddAsync(await ToDomain(profile));
-            return s != null ? ToDTO(s) : null;
+            var p = await _profileRepository.AddAsync(await ToDomain(profile));
+            return p != null ? ToDTO(p) : null;
         }
 
         public async Task<ProfileDTO> GetAsync(int id)

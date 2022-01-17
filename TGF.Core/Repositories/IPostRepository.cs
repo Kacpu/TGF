@@ -9,7 +9,7 @@ namespace TGF.Core.Repositories
 {
     public interface IPostRepository
     {
-        Task AddAsync(Post post);
+        Task<Post> AddAsync(Post post);
         Task<Post> GetAsync(int id);
         Task<IEnumerable<Post>> BrowseAllAsync();
         Task UpdateAsync(Post post);

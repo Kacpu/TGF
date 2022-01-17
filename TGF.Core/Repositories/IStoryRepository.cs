@@ -9,7 +9,7 @@ namespace TGF.Core.Repositories
 {
     public interface IStoryRepository
     {
-        Task AddAsync(Story story);
+        Task<Story> AddAsync(Story story);
         Task<Story> GetAsync(int id);
         Task<IEnumerable<Story>> BrowseAllAsync();
         Task UpdateAsync(Story story);

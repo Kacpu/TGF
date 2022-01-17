@@ -9,7 +9,7 @@ namespace TGF.Core.Repositories
 {
     public interface ICommentRepository
     {
-        Task AddAsync(Comment comment);
+        Task<Comment> AddAsync(Comment comment);
         Task<Comment> GetAsync(int id);
         Task<IEnumerable<Comment>> BrowseAllAsync();
         Task UpdateAsync(Comment comment);

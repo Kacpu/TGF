@@ -9,7 +9,7 @@ namespace TGF.Core.Repositories
 {
     public interface ICharacterRepository
     {
-        Task AddAsync(Character character);
+        Task<Character> AddAsync(Character character);
         Task<Character> GetAsync(int id);
         Task<IEnumerable<Character>> BrowseAllAsync();
         Task UpdateAsync(Character character);
