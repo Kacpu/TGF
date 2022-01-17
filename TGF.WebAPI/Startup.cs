@@ -43,6 +43,21 @@ namespace TGF.WebAPI
             services.AddScoped<IProfileRepository, ProfileRepository>();
             services.AddScoped<IProfileService, ProfileService>();
 
+            services.AddScoped<ICharacterRepository, CharacterRepository>();
+            services.AddScoped<ICharacterService, CharacterService>();
+
+            services.AddScoped<ICharacterCardRepository, CharacterCardRepository>();
+            services.AddScoped<ICharacterCardService, CharacterCardService>();
+
+            services.AddScoped<IStoryRepository, StoryRepository>();
+            services.AddScoped<IStoryService, StoryService>();
+
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IPostService, PostService>();
+
+            services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<ICommentService, CommentService>();
+
             services.AddDbContext<AppDbContext>(
                 options => options.UseSqlServer(
                     Configuration.GetConnectionString("TGFConnectionString")));

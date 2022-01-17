@@ -8,7 +8,7 @@ using TGF.Core.Repositories;
 
 namespace TGF.Infrastructure.Repositories
 {
-    class CharacterCardRepository : ICharacterCardRepository
+    public class CharacterCardRepository : ICharacterCardRepository
     {
         private AppDbContext _appDbContext;
 

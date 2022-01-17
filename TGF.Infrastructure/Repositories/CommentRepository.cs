@@ -8,7 +8,7 @@ using TGF.Core.Repositories;
 
 namespace TGF.Infrastructure.Repositories
 {
-    class CommentRepository : ICommentRepository
+    public class CommentRepository : ICommentRepository
     {
         private AppDbContext _appDbContext;
 

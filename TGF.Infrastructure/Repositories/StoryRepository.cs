@@ -8,7 +8,7 @@ using TGF.Core.Repositories;
 
 namespace TGF.Infrastructure.Repositories
 {
-    class StoryRepository : IStoryRepository
+    public class StoryRepository : IStoryRepository
     {
         private AppDbContext _appDbContext;
 
