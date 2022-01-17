@@ -12,7 +12,7 @@ namespace TGF.Core.Domain
         public DateTime PublicationDate { get; set; }
         public string Content { get; set; }
 
-        public int PostId { get; set; }
+        public int? PostId { get; set; }//?
         public Post Post { get; set; }
     }
 }

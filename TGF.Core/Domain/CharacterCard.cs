@@ -13,7 +13,7 @@ namespace TGF.Core.Domain
         public string AppearanceDescription { get; set; }
         public string CharacterDescription { get; set; }
 
-        public int CharacterId { get; set; }
+        public int? CharacterId { get; set; }//?
         public Character Character { get; set; }
     }
 }
