@@ -12,6 +12,7 @@ namespace TGF.Core.Repositories
         Task<Profile> AddAsync(Profile profile);
         Task<Profile> GetAsync(int id);
         Task<IEnumerable<Profile>> BrowseAllAsync();
+        Task<Profile> FindByUsername(string username);
         Task UpdateAsync(Profile profile);
         Task DelAsync(Profile profile);
     }

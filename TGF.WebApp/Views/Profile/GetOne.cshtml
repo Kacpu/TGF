@@ -1,0 +1,22 @@
+﻿@model TGF.WebApp.Models.ProfileVM
+
+<div class="card mb-3">
+    <div class="row no-gutters">
+        <div class="col-md-4">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Name</h5>
+                <h6 class="text-muted">O mnie</h6>
+                <p class="card-text">@Model.Description</p>
+            </div>
+            <div class="card-body">
+                <span class="mr-2">@Html.ActionLink("Edytuj profil", "Edit", new { id = Model.Id })</span>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title">Twoje postaci</h5>
+                <p class="card-text">@Model.Description</p>
+            </div>
+        </div>
+    </div>
+</div>

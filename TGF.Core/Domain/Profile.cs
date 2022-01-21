@@ -15,5 +15,8 @@ namespace TGF.Core.Domain
 
         public ICollection<Character> Characters {get; set;}
         public ICollection<Post> Posts { get; set; }
+
+        public string UserId { get; set; }
+        public AppUser AppUser { get; set; }
     }
 }

@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using TGF.WebApp.Models;
@@ -31,6 +33,7 @@ namespace TGF.WebApp.Controllers
             return ControllerContext.RouteData.Values["controller"].ToString();
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             //var tokenString = GenerateJSONWebToken();
@@ -53,17 +56,56 @@ namespace TGF.WebApp.Controllers
             return View(profilesList);
         }
 
-        //[Authorize]
+        [Authorize]
+        public async Task<IActionResult> GetOne(string username)
+        {
+            //var tokenString = GenerateJSONWebToken();
+            string _restpath = GetHostUrl().Content + CN();
+
+            ProfileVM p = new ProfileVM();
+
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+
+                    using (var response = await httpClient.GetAsync($"{_restpath}/filter?username={username}"))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        p = JsonConvert.DeserializeObject<ProfileVM>(apiResponse);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return View(e);
+            }
+
+            if(p == null)
+            {
+                return RedirectToAction(nameof(Create));
+                //TempData["Message"] = "Brak profilu użytkownika";
+                //TempData["Category"] = "danger";
+            }
+
+            return View(p);
+        }
+
+        [Authorize]
         public IActionResult Create()
         {
             return View();
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(ProfileVM p)
         {
-           // var tokenString = GenerateJSONWebToken();
+            ClaimsPrincipal loginUser = User;
+            p.UserId = loginUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            // var tokenString = GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + CN();
 
             try
@@ -82,10 +124,10 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(GetOne), new { username = User.Identity.Name });
         }
 
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
             //var tokenString = GenerateJSONWebToken();
@@ -113,7 +155,7 @@ namespace TGF.WebApp.Controllers
             return View(p);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Edit(ProfileVM p)
         {
@@ -142,7 +184,14 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
-            return View(pResult);
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction(nameof(Index));
+            } 
+            else
+            {
+                return RedirectToAction(nameof(GetOne), new { username = User.Identity.Name });
+            }
         }
 
         //[Authorize]

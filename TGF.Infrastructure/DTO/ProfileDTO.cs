@@ -14,6 +14,8 @@ namespace TGF.Infrastructure.DTO
         public string Description { get; set; }
         public DateTime LastSeen { get; set; }
 
+        public string UserID { get; set; }
+
        // public ICollection<Character> Characters { get; set; }
        // public ICollection<Post> Posts { get; set; }
     }

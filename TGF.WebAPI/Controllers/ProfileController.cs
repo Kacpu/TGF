@@ -31,7 +31,8 @@ namespace TGF.WebAPI.Controllers
             {
                 Name = profile.Name,
                 Description = profile.Description,
-                LastSeen = profile.LastSeen
+                LastSeen = profile.LastSeen,
+                UserID = profile.UserId
             };
 
             var p = await _profileService.AddAsync(profileDTO);
@@ -70,7 +71,20 @@ namespace TGF.WebAPI.Controllers
 
             return Json(profilesDTO);
         }
-        
+
+        [HttpGet("filter")]
+        public async Task<IActionResult> FindByUsername(string username)
+        {
+            ProfileDTO profileDTO = await _profileService.FindByUsername(username);
+
+            if (profileDTO == null)
+            {
+                return NotFound();
+            }
+
+            return Json(profileDTO);
+        }
+
 
         ////https://localhost:5001/skijumper/filter?name=alan&country=ger
         //[HttpGet("filter")]
@@ -85,7 +99,7 @@ namespace TGF.WebAPI.Controllers
 
         //    return Json(skiJumpersDTO);
         //}
-        
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfile profile, int id)

@@ -11,6 +11,7 @@ namespace TGF.WebApp.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime LastSeen { get; set; }
+        public string UserId { get; set; }
 
         // public ICollection<Character> Characters { get; set; }
         // public ICollection<Post> Posts { get; set; }

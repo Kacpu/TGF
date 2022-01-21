@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TGF.Core.Domain;
 using TGF.Infrastructure.Repositories;
 
 namespace TGF.WebApp
@@ -33,7 +34,7 @@ namespace TGF.WebApp
                     Configuration.GetConnectionString("TGFConnectionString")
                 ));
 
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+            services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

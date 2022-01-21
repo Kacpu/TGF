@@ -10,7 +10,7 @@ using TGF.Core.Domain;
 
 namespace TGF.Infrastructure.Repositories
 {
-    public class AppDbContext : IdentityDbContext<IdentityUser>
+    public class AppDbContext : IdentityDbContext<AppUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -31,5 +31,15 @@ namespace TGF.Infrastructure.Repositories
         //        .WithMany()
         //        .WillCascadeOnDelete(false);
         //}
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<AppUser>()
+                .HasOne(u => u.Profile)
+                .WithOne(p => p.AppUser)
+                .HasForeignKey<Profile>(u => u.UserId);
+        }
     }
 }

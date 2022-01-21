@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,6 +42,11 @@ namespace TGF.Infrastructure.Repositories
         public async Task<IEnumerable<Profile>> BrowseAllAsync()
         {
             return await Task.FromResult(_appDbContext.Profiles);
+        }
+
+        public async Task<Profile> FindByUsername(string username)
+        {
+            return await Task.FromResult(_appDbContext.Profiles.Include(p => p.AppUser).FirstOrDefault(p => p.AppUser.UserName == username));
         }
 
         public async Task UpdateAsync(Profile updatedP)

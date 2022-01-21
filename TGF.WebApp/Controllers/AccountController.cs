@@ -1,22 +1,28 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using TGF.Core.Domain;
 using TGF.WebApp.Models;
 
 namespace TGF.WebApp.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
+        public IConfiguration Configuration;
 
-        public AccountController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+        public AccountController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IConfiguration configuration)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            Configuration = configuration;
         }
 
         public IActionResult Login()
@@ -24,7 +30,6 @@ namespace TGF.WebApp.Controllers
             return View();
         }
 
-        //Logowanie POST
         [HttpPost]
         public async Task<IActionResult> Login(LoginVM loginVM)
         {
@@ -53,20 +58,20 @@ namespace TGF.WebApp.Controllers
             return View(new LoginVM());
         }
 
-        //Rejestracja POST
-        //Nie wymagająca podania ConfirmPassword 
         [HttpPost]
         public async Task<IActionResult> Register(LoginVM loginVM)
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser() { UserName = loginVM.UserName };
+                var user = new AppUser() { UserName = loginVM.UserName };
                 var result = await _userManager.CreateAsync(user, loginVM.Password);
-
+                
                 if (result.Succeeded)
                 {
                     TempData["Message"] = "Zarejestrowano pomyślnie! Teraz możesz się zalogować.";
-                    return RedirectToAction("Login", "Account"); //(metoda, controller)
+                    await CreateProfile(user.UserName, user.Id);
+
+                    return RedirectToAction("Login", "Account");
                 }
                 else
                 {
@@ -85,6 +90,41 @@ namespace TGF.WebApp.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        public ContentResult GetHostUrl()
+        {
+            var result = Configuration["RestApiUrl:HostUrl"];
+            return Content(result);
+        }
+
+        public async Task CreateProfile(string username, string userId)
+        {
+            ProfileVM profile = new ProfileVM
+            {
+                Name = username,
+                Description = "Write sth about you.",
+                LastSeen = DateTime.Now,
+                UserId = userId
+            };
+
+            // var tokenString = GenerateJSONWebToken();
+            string _restpath = GetHostUrl().Content + "profile";
+
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    string jsonString = System.Text.Json.JsonSerializer.Serialize(profile);
+                    var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+                    //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+
+                    var response = await httpClient.PostAsync(_restpath, content);
+                }
+            }
+            catch (Exception e)
+            {
+            }
         }
     }
 }

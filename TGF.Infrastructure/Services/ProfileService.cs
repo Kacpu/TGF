@@ -47,6 +47,18 @@ namespace TGF.Infrastructure.Services
 
             return profiles.Select(p => ToDTO(p));
         }
+        
+        public async Task<ProfileDTO> FindByUsername(string username)
+        {
+            var profile = await _profileRepository.FindByUsername(username);
+
+            if (profile == null)
+            {
+                return null;
+            }
+
+            return ToDTO(profile);
+        }
 
         public async Task UpdateAsync(ProfileDTO profileDTO)
         {
@@ -72,6 +84,8 @@ namespace TGF.Infrastructure.Services
                 Name = p.Name,
                 Description = p.Description,
                 LastSeen = p.LastSeen,
+                
+                UserID = p.UserId
 
                 // TrainerId = p.Trainer != null ? p.Trainer.Id : -1
             };
@@ -85,6 +99,7 @@ namespace TGF.Infrastructure.Services
                 Name = pDTO.Name,
                 Description = pDTO.Description,
                 LastSeen = pDTO.LastSeen,
+                UserId = pDTO.UserID
 
                 // Trainer = await _skiJumperRepository.GetTrainerAsync(pDTO.TrainerId)
             };

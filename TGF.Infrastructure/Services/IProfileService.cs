@@ -12,6 +12,7 @@ namespace TGF.Infrastructure.Services
         Task<ProfileDTO> AddAsync(ProfileDTO profileDTO);
         Task<ProfileDTO> GetAsync(int id);
         Task<IEnumerable<ProfileDTO>> BrowseAllAsync();
+        Task<ProfileDTO> FindByUsername(string username);
         Task UpdateAsync(ProfileDTO profileDTO);
         Task DelAsync(ProfileDTO profileDTO);
     }

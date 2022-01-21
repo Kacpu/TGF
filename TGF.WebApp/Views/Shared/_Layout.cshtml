@@ -1,5 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
+@using System.Security.Claims
+@using TGF.Core.Domain;
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
 
 <!DOCTYPE html>
 <html lang="en">
@@ -20,56 +23,77 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="Index">Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Character" asp-action="Index">Postacie</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="CharacterCard" asp-action="Index">Karty postaci</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Story" asp-action="Index">Historie</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Post" asp-action="Index">Posty</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Comment" asp-action="Index">Komentarze</a>
-                        </li>
-                        @if (SignInManager.IsSignedIn(User))
+                    @{
+                        if (User.IsInRole("Admin"))
                         {
-                            <li class="nav-link text-dark">
-                                Witaj @User.Identity.Name
-                            </li>
-                            <li class="nav-link text-dark">
-                                <form asp-area="" asp-controller="Account" asp-action="Logout" id="logoutForm" method="post" class="navbar-right">
-                                    <a href="javascript:document.getElementById('logoutForm').submit()">Wyloguj</a>
-                                </form>
-                            </li>
+                            <ul class="navbar-nav flex-grow-1 justify-content-center">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="Index">Profile</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Character" asp-action="Index">Postacie</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="CharacterCard" asp-action="Index">Karty postaci</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Story" asp-action="Index">Historie</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Post" asp-action="Index">Posty</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Comment" asp-action="Index">Komentarze</a>
+                                </li>
+                            </ul>
+                            <ul class="navbar-nav flex-grow-1 justify-content-end">
+                                <li class="nav-link text-danger">
+                                    @User.Identity.Name
+                                </li>
+                                <li class="nav-link text-dark">
+                                    <form asp-area="" asp-controller="Account" asp-action="Logout" id="logoutForm" method="post" class="navbar-right">
+                                        <a href="javascript:document.getElementById('logoutForm').submit()">Wyloguj</a>
+                                    </form>
+                                </li>
+                            </ul>
+                        }
+                        else if (SignInManager.IsSignedIn(User))
+                        {
+                            <ul class="navbar-nav flex-grow-1 justify-content-end">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="GetOne" asp-route-username="@User.Identity.Name">
+                                        @User.Identity.Name
+                                    </a>
+                                </li>
+                                <li class="nav-link text-dark">
+                                    <form asp-area="" asp-controller="Account" asp-action="Logout" id="logoutForm" method="post" class="navbar-right">
+                                        <a href="javascript:document.getElementById('logoutForm').submit()">Wyloguj</a>
+                                    </form>
+                                </li>
+                            </ul>
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Zarejestruj się</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Zaloguj się</a>
-                            </li>
+                            <ul class="navbar-nav flex-grow-1 justify-content-end">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Zarejestruj się</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Zaloguj się</a>
+                                </li>
+                            </ul>
                         }
-                    </ul>
+                    }
                 </div>
             </div>
         </nav>
     </header>
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-@TempData["Category"]" role="alert">
+            @TempData["Message"]
+        </div>
+    }
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -78,7 +102,8 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2022 - TGF.WebApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2022 - TGF.WebApp -
+            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
