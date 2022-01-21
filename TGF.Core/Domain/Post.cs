@@ -10,7 +10,7 @@ namespace TGF.Core.Domain
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public DateTime PublicationDate { get; set; }
+        public DateTime PublicationDate { get; set; } = DateTime.Now;
         public string Content { get; set; }
         public string Annotation { get; set; }
 

@@ -50,6 +50,11 @@ namespace TGF.WebApp.Controllers
                 }
             }
 
+            foreach(var post in postsList)
+            {
+                post.Short = post.Content.Substring(0, post.Content.Length < 200 ? post.Content.Length : 200);
+            }
+
             return View(postsList);
         }
 
