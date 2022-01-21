@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -9,6 +10,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using TGF.Core.Domain;
 using TGF.WebApp.Models;
 
 namespace TGF.WebApp.Controllers
@@ -16,10 +18,12 @@ namespace TGF.WebApp.Controllers
     public class ProfileController : Controller
     {
         public IConfiguration Configuration;
+        private readonly UserManager<AppUser> _userManager;
 
-        public ProfileController(IConfiguration configuration)
+        public ProfileController(IConfiguration configuration, UserManager<AppUser> userManager)
         {
             Configuration = configuration;
+            _userManager = userManager;
         }
 
         public ContentResult GetHostUrl()
@@ -102,8 +106,8 @@ namespace TGF.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ProfileVM p)
         {
-            ClaimsPrincipal loginUser = User;
-            p.UserId = loginUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //p.UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            p.UserId = _userManager.GetUserId(User);
 
             // var tokenString = GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + CN();

@@ -69,6 +69,7 @@ namespace TGF.WebApp.Controllers
                 if (result.Succeeded)
                 {
                     TempData["Message"] = "Zarejestrowano pomyślnie! Teraz możesz się zalogować.";
+                    TempData["Category"] = "success";
                     await CreateProfile(user.UserName, user.Id);
 
                     return RedirectToAction("Login", "Account");

@@ -88,14 +88,15 @@
             </div>
         </nav>
     </header>
-    @if (TempData["Message"] != null)
-    {
-        <div class="alert alert-@TempData["Category"]" role="alert">
-            @TempData["Message"]
-        </div>
-    }
+    
     <div class="container">
         <main role="main" class="pb-3">
+            @if (TempData["Message"] != null && TempData["Category"] != null)
+            {
+                <div class="alert alert-@TempData["Category"].ToString()" role="alert">
+                    @TempData["Message"].ToString()
+                </div>
+            }
             @RenderBody()
         </main>
     </div>
