@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,7 +35,7 @@ namespace TGF.Infrastructure.Repositories
 
         public async Task<Character> GetAsync(int id)
         {
-            return await Task.FromResult(_appDbContext.Characters.FirstOrDefault(c => c.Id == id));
+            return await Task.FromResult(_appDbContext.Characters.Include(c => c.CharacterCard).FirstOrDefault(c => c.Id == id));
         }
 
         public async Task<IEnumerable<Character>> BrowseAllAsync()

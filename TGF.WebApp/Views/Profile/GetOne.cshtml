@@ -1,8 +1,10 @@
 ﻿@model TGF.WebApp.Models.ProfileVM
 
+<h5>Profil użytkownika</h5>
+<br />
 <div class="card mb-3">
     <div class="row no-gutters">
-        <div class="col-md-4">
+        <div class="col-md-5">
             <div class="card-body">
                 <h5 class="card-title">@Model.Name</h5>
                 <h6 class="text-muted">O mnie</h6>
@@ -12,11 +14,28 @@
                 <span class="mr-2">@Html.ActionLink("Edytuj profil", "Edit", new { id = Model.Id })</span>
             </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-7">
             <div class="card-body">
                 <h5 class="card-title">Twoje postaci</h5>
-                <p class="card-text">@Model.Description</p>
+                @foreach (var character in Model.Characters)
+                {
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <a class="text-dark name" asp-area="" asp-controller="Character" asp-action="Get" asp-route-id="@character.Id">@character.Name</a>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .name {
+        font-size: 20px;
+    }
+    .name:hover {
+        text-decoration: none;
+        text-shadow: 0px 0px 2px #808080;
+    }
+</style>

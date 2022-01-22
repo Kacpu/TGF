@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
@@ -31,11 +32,11 @@ namespace TGF.WebApp.Controllers
             return ControllerContext.RouteData.Values["controller"].ToString();
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             //var tokenString = GenerateJSONWebToken();
 
-            //string _restpath = "https://localhost:5001/profile";
             string _restpath = GetHostUrl().Content + CN();
 
             List<CharacterVM> charactersList = new List<CharacterVM>();
@@ -43,6 +44,7 @@ namespace TGF.WebApp.Controllers
             using (var httpClient = new HttpClient())
             {
                 //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+
                 using (var response = await httpClient.GetAsync(_restpath))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
@@ -51,6 +53,41 @@ namespace TGF.WebApp.Controllers
             }
 
             return View(charactersList);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Get(int id)
+        {
+            //var tokenString = GenerateJSONWebToken();
+            string _restpath = GetHostUrl().Content + CN();
+
+            CharacterVM c = new CharacterVM();
+
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                    using (var response = await httpClient.GetAsync($"{_restpath}/{id}"))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        c = JsonConvert.DeserializeObject<CharacterVM>(apiResponse);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return View(e);
+            }
+
+            if (c == null)
+            {
+                TempData["Message"] = "Brak karty dla postaci: " + c.Name;
+                TempData["Category"] = "danger";
+                return RedirectToAction();
+            }
+
+            return View(c);
         }
 
         //[Authorize]

@@ -106,9 +106,12 @@ namespace TGF.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ProfileVM p)
         {
-            //p.UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            p.UserId = _userManager.GetUserId(User);
-
+            if (!User.IsInRole("Admin"))
+            {
+                //p.UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                p.UserId = _userManager.GetUserId(User);
+            }
+            
             // var tokenString = GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + CN();
 
@@ -128,7 +131,16 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
-            return RedirectToAction(nameof(GetOne), new { username = User.Identity.Name });
+            if (User.IsInRole("Admin"))
+            {
+                TempData["Message"] = "Dodano nowy profil o nazwie: " + p.Name;
+                TempData["Category"] = "success";
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return RedirectToAction(nameof(GetOne), new { username = User.Identity.Name });
+            }
         }
 
         [Authorize]

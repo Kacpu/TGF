@@ -42,7 +42,6 @@ namespace TGF.WebAPI.Controllers
             return CreatedAtAction(nameof(GetCharacter), new { id = c.Id }, c);
         }
 
-        //https://localhost:5001/comment/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCharacter(int id)
         {

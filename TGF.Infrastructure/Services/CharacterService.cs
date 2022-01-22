@@ -69,7 +69,15 @@ namespace TGF.Infrastructure.Services
             return new CharacterDTO()
             {
                 Id = c.Id,
-                Name = c.Name
+                Name = c.Name,
+                ProfileId = c.ProfileId,
+                CharacterCard = new CharacterCardDTO()
+                {
+                    Id = c.CharacterCard.Id,
+                    AppearanceDescription = c.CharacterCard.AppearanceDescription,
+                    CharacterDescription = c.CharacterCard.CharacterDescription,
+                    History = c.CharacterCard.History
+                }
             };
         }
 

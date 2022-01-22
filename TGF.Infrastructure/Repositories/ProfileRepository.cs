@@ -36,7 +36,7 @@ namespace TGF.Infrastructure.Repositories
 
         public async Task<Profile> GetAsync(int id)
         {
-            return await Task.FromResult(_appDbContext.Profiles.FirstOrDefault(p => p.Id == id));
+            return await Task.FromResult(_appDbContext.Profiles.Include(p => p.Characters).FirstOrDefault(p => p.Id == id));
         }
 
         public async Task<IEnumerable<Profile>> BrowseAllAsync()
@@ -46,7 +46,8 @@ namespace TGF.Infrastructure.Repositories
 
         public async Task<Profile> FindByUsername(string username)
         {
-            return await Task.FromResult(_appDbContext.Profiles.Include(p => p.AppUser).FirstOrDefault(p => p.AppUser.UserName == username));
+            return await Task.FromResult(_appDbContext.Profiles.Include(p => p.AppUser).Include(p => p.Characters)
+                .FirstOrDefault(p => p.AppUser.UserName == username));
         }
 
         public async Task UpdateAsync(Profile updatedP)

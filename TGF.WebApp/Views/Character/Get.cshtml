@@ -1,0 +1,38 @@
+﻿@model TGF.WebApp.Models.CharacterVM
+
+<h5>Karta postaci</h5>
+<br />
+<div class="card mb-3">
+    <div class="row no-gutters">
+        <div class="col-md">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Name</h5>
+                <h6 class="text-muted">Historia</h6>
+                <p class="card-text">@Model.CharacterCard.History</p>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="row no-gutters">
+                <div class="card-body">
+                    <h6 class="text-muted">Opis charakteru</h6>
+                    <p class="card-text">@Model.CharacterCard.CharacterDescription</p>
+                </div>
+            </div>
+            <div class="row no-gutters">
+                <div class="card-body">
+                    <h6 class="text-muted">Opis wyglądu</h6>
+                    <p class="card-text">@Model.CharacterCard.AppearanceDescription</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row no-gutters">
+        <div class="col-md">
+            <div class="card-footer">
+                <a class="mr-3" asp-action="Edit" asp-route-id="@Model.Id">Edytuj kartę</a>
+                <a class="" asp-controller="Profile" asp-action="GetOne" asp-route-username="@User.Identity.Name">Powrót</a>
+            </div>
+        </div>
+    </div>
+
+</div>

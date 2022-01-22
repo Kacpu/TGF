@@ -16,7 +16,7 @@ namespace TGF.Infrastructure.DTO
 
         public string UserID { get; set; }
 
-       // public ICollection<Character> Characters { get; set; }
+        public ICollection<CharacterDTO> Characters { get; set; }
        // public ICollection<Post> Posts { get; set; }
     }
 }

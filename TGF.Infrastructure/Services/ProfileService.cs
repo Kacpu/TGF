@@ -78,16 +78,26 @@ namespace TGF.Infrastructure.Services
 
         private ProfileDTO ToDTO(Profile p)
         {
+            ICollection<CharacterDTO> charactersDTO = new List<CharacterDTO>();
+            foreach(var ch in p.Characters)
+            {
+                charactersDTO.Add(new CharacterDTO
+                {
+                    Id = ch.Id,
+                    Name = ch.Name
+                });
+            }
+
             return new ProfileDTO()
             {
                 Id = p.Id,
                 Name = p.Name,
                 Description = p.Description,
                 LastSeen = p.LastSeen,
-                
-                UserID = p.UserId
 
-                // TrainerId = p.Trainer != null ? p.Trainer.Id : -1
+                UserID = p.UserId,
+
+                Characters = charactersDTO
             };
         }
 
