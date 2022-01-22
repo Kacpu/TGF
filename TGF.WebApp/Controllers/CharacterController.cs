@@ -15,10 +15,12 @@ namespace TGF.WebApp.Controllers
     public class CharacterController : Controller
     {
         public IConfiguration Configuration;
+        public CharacterCardController _characterCardController;
 
-        public CharacterController(IConfiguration configuration)
+        public CharacterController(IConfiguration configuration, CharacterCardController characterCardController)
         {
             Configuration = configuration;
+            _characterCardController = characterCardController;
         }
 
         public ContentResult GetHostUrl()
@@ -82,7 +84,7 @@ namespace TGF.WebApp.Controllers
 
             if (c == null)
             {
-                TempData["Message"] = "Brak karty dla postaci: " + c.Name;
+                TempData["Message"] = "Brak karty postaci!";
                 TempData["Category"] = "danger";
                 return RedirectToAction();
             }
@@ -122,7 +124,7 @@ namespace TGF.WebApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
             //var tokenString = GenerateJSONWebToken();
@@ -150,7 +152,7 @@ namespace TGF.WebApp.Controllers
             return View(c);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Edit(CharacterVM c)
         {
@@ -179,7 +181,16 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
-            return View(cResult);
+            await _characterCardController.EditCard(c.CharacterCard);
+
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return RedirectToAction(nameof(Get), new { id = cResult.Id });
+            }
         }
 
         //[Authorize]
@@ -217,12 +228,14 @@ namespace TGF.WebApp.Controllers
             //var tokenString = GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + CN();
 
+            await _characterCardController.DeleteCard(c.CharacterCard);
+
             try
             {
                 using (var httpClient = new HttpClient())
                 {
                     //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
-                    using var response = await httpClient.DeleteAsync($"{ _restpath}/{c.Id}");
+                    var response = await httpClient.DeleteAsync($"{ _restpath}/{c.Id}");
                 }
             }
             catch (Exception e)
@@ -230,7 +243,14 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
-            return RedirectToAction(nameof(Index));
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return RedirectToAction("GetOne", "Profile", new { username = User.Identity.Name });
+            }
         }
     }
 }

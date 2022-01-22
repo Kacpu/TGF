@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TGF.Core.Domain;
 using TGF.Infrastructure.Repositories;
+using TGF.WebApp.Controllers;
 
 namespace TGF.WebApp
 {
@@ -28,6 +29,8 @@ namespace TGF.WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddScoped<CharacterCardController>();
 
             services.AddDbContext<AppDbContext>(
                 options => options.UseSqlServer(

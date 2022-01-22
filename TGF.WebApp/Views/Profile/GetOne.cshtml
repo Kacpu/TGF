@@ -10,9 +10,6 @@
                 <h6 class="text-muted">O mnie</h6>
                 <p class="card-text">@Model.Description</p>
             </div>
-            <div class="card-body">
-                <span class="mr-2">@Html.ActionLink("Edytuj profil", "Edit", new { id = Model.Id })</span>
-            </div>
         </div>
         <div class="col-md-7">
             <div class="card-body">
@@ -25,6 +22,13 @@
                         </div>
                     </div>
                 }
+            </div>
+        </div>
+    </div>
+    <div class="row no-gutters">
+        <div class="col-md">
+            <div class="card-footer">
+                <a class="mr-3" asp-action="Edit" asp-route-id="@Model.Id">Edytuj profil</a>
             </div>
         </div>
     </div>

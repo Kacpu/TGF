@@ -5,22 +5,52 @@
     <h4>CharacterVM</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Id)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Id)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CharacterCard.History)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CharacterCard.History)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CharacterCard.CharacterDescription)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CharacterCard.CharacterDescription)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CharacterCard.AppearanceDescription)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CharacterCard.AppearanceDescription)
+        </dd>
     </dl>
-    
+
     <form asp-action="Delete">
+        <input asp-for="CharacterCard.Id" class="form-control" hidden />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        @{
+            if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Index">Back to List</a>
+            }
+            else if (User.Identity.IsAuthenticated)
+            {
+                <a asp-action="Get" asp-route-id="@Model.Id">Back to Card</a>
+            }
+        }
     </form>
 </div>
+
+

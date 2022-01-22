@@ -115,7 +115,7 @@ namespace TGF.WebApp.Controllers
 
         //[Authorize]
         [HttpPost]
-        public async Task<IActionResult> Edit(CharacterCardVM p)
+        public async Task<IActionResult> Edit(CharacterCardVM c)
         {
             //var tokenString = GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + CN();
@@ -126,11 +126,11 @@ namespace TGF.WebApp.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    string jsonString = System.Text.Json.JsonSerializer.Serialize(p);
+                    string jsonString = System.Text.Json.JsonSerializer.Serialize(c);
                     var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
                     //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
 
-                    using (var response = await httpClient.PutAsync($"{ _restpath}/{p.Id}", content))
+                    using (var response = await httpClient.PutAsync($"{ _restpath}/{c.Id}", content))
                     {
                         string apiResponse = await response.Content.ReadAsStringAsync();
                         cResult = JsonConvert.DeserializeObject<CharacterCardVM>(apiResponse);
@@ -194,6 +194,49 @@ namespace TGF.WebApp.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task EditCard(CharacterCardVM c)
+        {
+            string _restpath = GetHostUrl().Content + "CharacterCard";
+
+            CharacterCardVM cResult = new CharacterCardVM();
+
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    string jsonString = System.Text.Json.JsonSerializer.Serialize(c);
+                    var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+                    //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+
+                    var response = await httpClient.PutAsync($"{ _restpath}/{c.Id}", content);
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    cResult = JsonConvert.DeserializeObject<CharacterCardVM>(apiResponse);
+                }
+            }
+            catch (Exception e)
+            {
+            }
+        }
+
+        public async Task DeleteCard(CharacterCardVM c)
+        {
+            //var tokenString = GenerateJSONWebToken();
+            string _restpath = GetHostUrl().Content + "CharacterCard";
+            var a = c ;
+
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                    using var response = await httpClient.DeleteAsync($"{ _restpath}/{c.Id}");
+                }
+            }
+            catch (Exception e)
+            {
+            }
         }
     }
 }

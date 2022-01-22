@@ -71,13 +71,13 @@ namespace TGF.Infrastructure.Services
                 Id = c.Id,
                 Name = c.Name,
                 ProfileId = c.ProfileId,
-                CharacterCard = new CharacterCardDTO()
+                CharacterCard = c.CharacterCard != null ? new CharacterCardDTO()
                 {
                     Id = c.CharacterCard.Id,
                     AppearanceDescription = c.CharacterCard.AppearanceDescription,
                     CharacterDescription = c.CharacterCard.CharacterDescription,
                     History = c.CharacterCard.History
-                }
+                } : null
             };
         }
 
