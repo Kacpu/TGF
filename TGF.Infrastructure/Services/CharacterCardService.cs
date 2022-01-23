@@ -71,7 +71,8 @@ namespace TGF.Infrastructure.Services
                 Id = c.Id,
                 History = c.History,
                 AppearanceDescription = c.AppearanceDescription,
-                CharacterDescription = c.CharacterDescription
+                CharacterDescription = c.CharacterDescription,
+                CharacterId = c.CharacterId
             };
         }
 
@@ -82,7 +83,9 @@ namespace TGF.Infrastructure.Services
                 Id = cDTO.Id,
                 History = cDTO.History,
                 AppearanceDescription = cDTO.AppearanceDescription,
-                CharacterDescription = cDTO.CharacterDescription
+                CharacterDescription = cDTO.CharacterDescription,
+
+                CharacterId = cDTO.CharacterId
             };
         }
     }

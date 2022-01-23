@@ -8,20 +8,23 @@
             <div class="card-body">
                 <h5 class="card-title">@Model.Name</h5>
                 <h6 class="text-muted">O mnie</h6>
-                <p class="card-text">@Model.Description</p>
+                <p class="card-text text-justify">@Model.Description</p>
             </div>
         </div>
         <div class="col-md-7">
             <div class="card-body">
                 <h5 class="card-title">Twoje postaci</h5>
-                @foreach (var character in Model.Characters)
-                {
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <a class="text-dark name" asp-area="" asp-controller="Character" asp-action="Get" asp-route-id="@character.Id">@character.Name</a>
+                <a class="card-link" asp-area="" asp-controller="Character" asp-action="Create" asp-route-profile="@Model.Id">Stwórz nową postać</a>
+                <div class="mt-4">
+                    @foreach (var character in Model.Characters)
+                    {
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <a class="text-dark name" asp-area="" asp-controller="Character" asp-action="Get" asp-route-id="@character.Id">@character.Name</a>
+                            </div>
                         </div>
-                    </div>
-                }
+                    }
+                </div>
             </div>
         </div>
     </div>
@@ -38,8 +41,9 @@
     .name {
         font-size: 20px;
     }
-    .name:hover {
-        text-decoration: none;
-        text-shadow: 0px 0px 2px #808080;
-    }
+
+        .name:hover {
+            text-decoration: none;
+            text-shadow: 0px 0px 2px #808080;
+        }
 </style>

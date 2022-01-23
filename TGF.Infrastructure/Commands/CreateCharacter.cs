@@ -15,7 +15,7 @@ namespace TGF.Infrastructure.Commands
         //public ICollection<Story> Stories { get; set; }
         //public ICollection<Post> Posts { get; set; }
 
-        //public int ProfileId { get; set; }
+        public int ProfileId { get; set; }
        // public Profile Profile { get; set; }
     }
 }

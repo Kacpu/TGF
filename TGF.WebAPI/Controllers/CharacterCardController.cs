@@ -31,7 +31,8 @@ namespace TGF.WebAPI.Controllers
             {
                 History = characterCard.History,
                 AppearanceDescription = characterCard.AppearanceDescription,
-                CharacterDescription = characterCard.CharacterDescription
+                CharacterDescription = characterCard.CharacterDescription,
+                CharacterId = characterCard.CharacterId
             };
 
             var c = await _characterCardService.AddAsync(characterCardDTO);

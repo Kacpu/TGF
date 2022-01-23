@@ -82,28 +82,31 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
-            if (c == null)
+            if (c == null || c.CharacterCard == null)
             {
                 TempData["Message"] = "Brak karty postaci!";
                 TempData["Category"] = "danger";
-                return RedirectToAction();
+                return RedirectToAction("GetOne", "Profile", new { username = User.Identity.Name });
             }
 
             return View(c);
         }
 
-        //[Authorize]
-        public IActionResult Create()
+        [Authorize]
+        public IActionResult Create(int profile)
         {
-            return View();
+            CharacterVM characterVM = new CharacterVM() { ProfileId = profile };
+            
+            return View(characterVM);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(CharacterVM c)
         {
             // var tokenString = GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + CN();
+            int cId = 0;
 
             try
             {
@@ -113,15 +116,36 @@ namespace TGF.WebApp.Controllers
                     var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
                     //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
 
-                    using var response = await httpClient.PostAsync(_restpath, content);
+                    var response = await httpClient.PostAsync(_restpath, content);
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        TempData["Message"] = "Błędne id profilu!";
+                        TempData["Category"] = "danger";
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        cId = int.Parse(response.Headers.Location.Segments[2]);
+                    }
                 }
             }
             catch (Exception e)
             {
                 return View(e);
             }
+            
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                c.CharacterCard.CharacterId = cId;
+                await _characterCardController.CreateCard(c.CharacterCard);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction("GetOne", "Profile", new { username = User.Identity.Name });
+            }
         }
 
         [Authorize]
@@ -147,6 +171,11 @@ namespace TGF.WebApp.Controllers
             catch (Exception e)
             {
                 return View(e);
+            }
+
+            if (c == null)
+            {
+                return RedirectToAction("GetOne", "Profile", new { username = User.Identity.Name });
             }
 
             return View(c);
@@ -181,14 +210,14 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
-            await _characterCardController.EditCard(c.CharacterCard);
-
             if (User.IsInRole("Admin"))
             {
                 return RedirectToAction(nameof(Index));
             }
             else
             {
+                await _characterCardController.EditCard(c.CharacterCard);
+
                 return RedirectToAction(nameof(Get), new { id = cResult.Id });
             }
         }
@@ -218,6 +247,11 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
+            if(c == null)
+            {
+                return RedirectToAction("GetOne", "Profile", new { username = User.Identity.Name });
+            }
+
             return View(c);
         }
 
@@ -227,8 +261,7 @@ namespace TGF.WebApp.Controllers
         {
             //var tokenString = GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + CN();
-
-            await _characterCardController.DeleteCard(c.CharacterCard);
+           // await _characterCardController.DeleteCard(c.CharacterCard);
 
             try
             {

@@ -29,7 +29,8 @@ namespace TGF.WebAPI.Controllers
 
             CharacterDTO characterDTO = new CharacterDTO()
             {
-                Name = character.Name
+                Name = character.Name,
+                ProfileId = character.ProfileId
             };
 
             var c = await _characterService.AddAsync(characterDTO);

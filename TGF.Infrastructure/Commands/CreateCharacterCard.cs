@@ -11,5 +11,7 @@ namespace TGF.Infrastructure.Commands
         public string History { get; set; }
         public string AppearanceDescription { get; set; }
         public string CharacterDescription { get; set; }
+
+        public int CharacterId { get; set; }
     }
 }

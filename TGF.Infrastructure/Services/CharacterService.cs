@@ -86,7 +86,8 @@ namespace TGF.Infrastructure.Services
             return new Character()
             {
                 Id = cDTO.Id,
-                Name = cDTO.Name
+                Name = cDTO.Name,
+                ProfileId = cDTO.ProfileId
             };
         }
     }

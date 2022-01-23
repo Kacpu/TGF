@@ -27,7 +27,6 @@ namespace TGF.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                await Task.FromException(ex);
                 return null;
             }
         }

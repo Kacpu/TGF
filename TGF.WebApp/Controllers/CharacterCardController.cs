@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
@@ -31,6 +32,7 @@ namespace TGF.WebApp.Controllers
             return ControllerContext.RouteData.Values["controller"].ToString();
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             //var tokenString = GenerateJSONWebToken();
@@ -53,13 +55,13 @@ namespace TGF.WebApp.Controllers
             return View(characterCardsList);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(CharacterCardVM c)
         {
@@ -74,7 +76,13 @@ namespace TGF.WebApp.Controllers
                     var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
                     //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
 
-                    using var response = await httpClient.PostAsync(_restpath, content);
+                    var response = await httpClient.PostAsync(_restpath, content);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        TempData["Message"] = "Błędne id postaci!";
+                        TempData["Category"] = "danger";
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
             }
             catch (Exception e)
@@ -85,7 +93,7 @@ namespace TGF.WebApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             //var tokenString = GenerateJSONWebToken();
@@ -113,7 +121,7 @@ namespace TGF.WebApp.Controllers
             return View(c);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Edit(CharacterCardVM c)
         {
@@ -145,7 +153,7 @@ namespace TGF.WebApp.Controllers
             return View(cResult);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             //var tokenString = GenerateJSONWebToken();
@@ -173,7 +181,7 @@ namespace TGF.WebApp.Controllers
             return View(c);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Delete(CharacterCardVM c)
         {
@@ -194,6 +202,27 @@ namespace TGF.WebApp.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task CreateCard(CharacterCardVM c)
+        {
+            // var tokenString = GenerateJSONWebToken();
+            string _restpath = GetHostUrl().Content + "CharacterCard";
+
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    string jsonString = System.Text.Json.JsonSerializer.Serialize(c);
+                    var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+                    //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+
+                    using var response = await httpClient.PostAsync(_restpath, content);
+                }
+            }
+            catch (Exception e)
+            {
+            }
         }
 
         public async Task EditCard(CharacterCardVM c)
@@ -224,7 +253,6 @@ namespace TGF.WebApp.Controllers
         {
             //var tokenString = GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + "CharacterCard";
-            var a = c ;
 
             try
             {
