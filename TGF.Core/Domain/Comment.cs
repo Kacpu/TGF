@@ -9,7 +9,7 @@ namespace TGF.Core.Domain
     public class Comment
     {
         public int Id { get; set; }
-        public DateTime PublicationDate { get; set; }
+        public DateTime PublicationDate { get; set; } = DateTime.Now;
         public string Content { get; set; }
 
         public int? PostId { get; set; }//?

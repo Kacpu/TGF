@@ -58,6 +58,9 @@ namespace TGF.WebAPI
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<ICommentService, CommentService>();
 
+            services.AddScoped<ICharacterStoryRepository, CharacterStoryRepository>();
+            services.AddScoped<ICharacterStoryService, CharacterStoryService>();
+
             services.AddDbContext<AppDbContext>(
                 options => options.UseSqlServer(
                     Configuration.GetConnectionString("TGFConnectionString")));

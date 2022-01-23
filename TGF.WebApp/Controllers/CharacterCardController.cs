@@ -81,6 +81,10 @@ namespace TGF.WebApp.Controllers
                     {
                         TempData["Message"] = "Błędne id postaci!";
                         TempData["Category"] = "danger";
+                        if (User.IsInRole("Admin"))
+                        {
+                            return RedirectToAction("Index");
+                        }
                         return RedirectToAction("Index", "Home");
                     }
                 }

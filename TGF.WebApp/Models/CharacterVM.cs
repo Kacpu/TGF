@@ -13,10 +13,11 @@ namespace TGF.WebApp.Models
         public string Name { get; set; }
 
         public int ProfileId { get; set; }
+        public ProfileVM Profile { get; set; }
 
         public CharacterCardVM CharacterCard { get; set; }
 
-        //public ICollection<Story> Stories { get; set; }
+        public ICollection<StoryVM> Stories { get; set; }
         //public ICollection<Post> Posts { get; set; }
     }
 }

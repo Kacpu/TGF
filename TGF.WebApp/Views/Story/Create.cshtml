@@ -11,11 +11,8 @@
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CreationDate" class="control-label"></label>
-                <input asp-for="CreationDate" class="form-control" />
-                <span asp-validation-for="CreationDate" class="text-danger"></span>
-            </div>
+            <input asp-for="CreationDate" class="form-control" hidden />
+            <input asp-for="FromCharacter" class="form-control" hidden />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -23,9 +20,20 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@{
+    if (User.IsInRole("Admin"))
+    {
+        <div>
+            <a asp-action="Index">Back to List</a>
+        </div>
+    }
+    else if (User.Identity.IsAuthenticated)
+    {
+        <div>
+            <a class="" asp-controller="Character" asp-action="Get" asp-route-id="@Model.FromCharacter">Back to card</a>
+        </div>
+    }
+}
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

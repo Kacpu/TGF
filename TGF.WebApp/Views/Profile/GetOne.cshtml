@@ -1,7 +1,7 @@
 ﻿@model TGF.WebApp.Models.ProfileVM
+@using System.Security.Claims
 
-<h5>Profil użytkownika</h5>
-<br />
+<h5 class="mb-3">Profil użytkownika</h5>
 <div class="card mb-3">
     <div class="row no-gutters">
         <div class="col-md-5">
@@ -13,8 +13,11 @@
         </div>
         <div class="col-md-7">
             <div class="card-body">
-                <h5 class="card-title">Twoje postaci</h5>
-                <a class="card-link" asp-area="" asp-controller="Character" asp-action="Create" asp-route-profile="@Model.Id">Stwórz nową postać</a>
+                <h5 class="card-title">Postaci</h5>
+                @if (Model.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                {
+                    <a class="card-link" asp-area="" asp-controller="Character" asp-action="Create" asp-route-profile="@Model.Id">Stwórz nową postać</a>
+                }
                 <div class="mt-4">
                     @foreach (var character in Model.Characters)
                     {
@@ -31,7 +34,10 @@
     <div class="row no-gutters">
         <div class="col-md">
             <div class="card-footer">
-                <a class="mr-3" asp-action="Edit" asp-route-id="@Model.Id">Edytuj profil</a>
+                @if (Model.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                {
+                    <a class="mr-3" asp-action="Edit" asp-route-id="@Model.Id">Edytuj profil</a>
+                }
             </div>
         </div>
     </div>

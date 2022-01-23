@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
@@ -31,6 +32,7 @@ namespace TGF.WebApp.Controllers
             return ControllerContext.RouteData.Values["controller"].ToString();
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             //var tokenString = GenerateJSONWebToken();
@@ -53,18 +55,65 @@ namespace TGF.WebApp.Controllers
             return View(storiesList);
         }
 
-        //[Authorize]
-        public IActionResult Create()
+        [Authorize]
+        public async Task<IActionResult> Get(int id, int character)
         {
-            return View();
+            //var tokenString = GenerateJSONWebToken();
+            string _restpath = GetHostUrl().Content + CN();
+            StoryVM s = new StoryVM();
+
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                    using (var response = await httpClient.GetAsync($"{_restpath}/{id}"))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        s = JsonConvert.DeserializeObject<StoryVM>(apiResponse);
+                    }
+
+                    using (var response = await httpClient.GetAsync($"{GetHostUrl().Content}character"))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        s.OtherCharacters = JsonConvert.DeserializeObject<List<CharacterVM>>(apiResponse);
+                        foreach(CharacterVM c in s.Characters)
+                        {
+                            s.OtherCharacters.Remove(s.OtherCharacters.First(x => x.Id == c.Id)); 
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return View(e);
+            }
+
+            if (s == null)
+            {
+                TempData["Message"] = "Brak Historii!";
+                TempData["Category"] = "danger";
+                return RedirectToAction("Get", "Character", new { id = character });
+            }
+
+            return View(s);
         }
 
-        //[Authorize]
+        [Authorize]
+        public IActionResult Create(int character)
+        {
+            StoryVM characterVM = new StoryVM() { FromCharacter = character };
+
+            return View(characterVM);
+        }
+
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(StoryVM s)
         {
             // var tokenString = GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + CN();
+            int Id = 0;
 
             try
             {
@@ -74,7 +123,21 @@ namespace TGF.WebApp.Controllers
                     var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
                     //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
 
-                    using var response = await httpClient.PostAsync(_restpath, content);
+                    var response = await httpClient.PostAsync(_restpath, content);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        TempData["Message"] = "Błąd tworzenia story!";
+                        TempData["Category"] = "danger";
+                        if (User.IsInRole("Admin"))
+                        {
+                            return RedirectToAction("Index");
+                        }
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        Id = int.Parse(response.Headers.Location.Segments[2]);
+                    }
                 }
             }
             catch (Exception e)
@@ -82,10 +145,17 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
-            return RedirectToAction(nameof(Index));
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return RedirectToAction("Create", "CharacterStory", new { sId = Id, cId = s.FromCharacter});
+            }
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             //var tokenString = GenerateJSONWebToken();
@@ -110,10 +180,17 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
+            if (s == null)
+            {
+                TempData["Message"] = "Nie można pobrać historii!";
+                TempData["Category"] = "danger";
+                return RedirectToAction("Index");
+            }
+
             return View(s);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Edit(StoryVM s)
         {
@@ -142,10 +219,10 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
-            return View(sResult);
+            return RedirectToAction(nameof(Index));
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             //var tokenString = GenerateJSONWebToken();
@@ -170,10 +247,17 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
+            if (s == null)
+            {
+                TempData["Message"] = "Nie można pobrać historii!";
+                TempData["Category"] = "danger";
+                return RedirectToAction("Index");
+            }
+
             return View(s);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Delete(StoryVM p)
         {
@@ -195,5 +279,51 @@ namespace TGF.WebApp.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        //[Authorize]
+        //public async Task<IActionResult> AddCharacter(int storyId, int characterId)
+        //{
+        //    //var tokenString = GenerateJSONWebToken();
+        //    string _restpath = GetHostUrl().Content + CN();
+
+        //    StoryVM sResult = new StoryVM();
+        //    StoryVM s = new StoryVM();
+        //    CharacterVM c = new CharacterVM();
+
+        //    try
+        //    {
+        //        using (var httpClient = new HttpClient())
+        //        {
+        //            using (var response = await httpClient.GetAsync($"{_restpath}/{storyId}"))
+        //            {
+        //                string apiResponse = await response.Content.ReadAsStringAsync();
+        //                s = JsonConvert.DeserializeObject<StoryVM>(apiResponse);
+        //            }
+
+        //            using (var response = await httpClient.GetAsync($"{GetHostUrl().Content}character/{characterId}"))
+        //            {
+        //                string apiResponse = await response.Content.ReadAsStringAsync();
+        //                s = JsonConvert.DeserializeObject<StoryVM>(apiResponse);
+        //            }
+
+
+        //            string jsonString = System.Text.Json.JsonSerializer.Serialize(s);
+        //            var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+        //            //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+
+        //            using (var response = await httpClient.PutAsync($"{ _restpath}/{s.Id}", content))
+        //            {
+        //                string apiResponse = await response.Content.ReadAsStringAsync();
+        //                sResult = JsonConvert.DeserializeObject<StoryVM>(apiResponse);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return View(e);
+        //    }
+
+        //    return RedirectToAction(nameof(Index));
+        //}
     }
 }

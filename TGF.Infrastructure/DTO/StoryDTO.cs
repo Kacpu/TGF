@@ -12,7 +12,7 @@ namespace TGF.Infrastructure.DTO
         public string Title { get; set; }
         public DateTime CreationDate { get; set; }
 
-        //public ICollection<Post> Posts { get; set; }
-        //public ICollection<Character> Characters { get; set; }
+        public ICollection<PostDTO> Posts { get; set; }
+        public ICollection<CharacterDTO> Characters { get; set; }
     }
 }

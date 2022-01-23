@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace TGF.Infrastructure.Commands
 {
-    public class UpdateStory
+    public class CreateCharacterStory
     {
-        public string Title { get; set; }
+        public int CharactersId { get; set; }
+        public int StoriesId { get; set; }
     }
 }

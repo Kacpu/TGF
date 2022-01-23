@@ -35,12 +35,13 @@ namespace TGF.Infrastructure.Repositories
 
         public async Task<Character> GetAsync(int id)
         {
-            return await Task.FromResult(_appDbContext.Characters.Include(c => c.CharacterCard).FirstOrDefault(c => c.Id == id));
+            return await Task.FromResult(_appDbContext.Characters.Include(c => c.Profile).Include(c => c.CharacterCard)
+                .Include(c => c.Stories).FirstOrDefault(c => c.Id == id));
         }
 
         public async Task<IEnumerable<Character>> BrowseAllAsync()
         {
-            return await Task.FromResult(_appDbContext.Characters);
+            return await Task.FromResult(_appDbContext.Characters.Include(c => c.Profile).ToList());
         }
 
         public async Task UpdateAsync(Character updatedC)

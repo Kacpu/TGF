@@ -66,18 +66,39 @@ namespace TGF.Infrastructure.Services
 
         private CharacterDTO ToDTO(Character c)
         {
+            ICollection<StoryDTO> storiesDTO = new List<StoryDTO>();
+            if (c.Stories != null)
+            {
+                foreach (var story in c.Stories)
+                {
+                    storiesDTO.Add(new StoryDTO
+                    {
+                        Id = story.Id,
+                        Title = story.Title,
+                        CreationDate = story.CreationDate
+                    });
+                }
+            }
+
             return new CharacterDTO()
             {
                 Id = c.Id,
                 Name = c.Name,
                 ProfileId = c.ProfileId,
+                Profile = c.Profile != null ? new ProfileDTO()
+                {
+                    Id = c.Profile.Id,
+                    Name = c.Profile.Name,
+                    UserID = c.Profile.UserId
+                } : null,
                 CharacterCard = c.CharacterCard != null ? new CharacterCardDTO()
                 {
                     Id = c.CharacterCard.Id,
                     AppearanceDescription = c.CharacterCard.AppearanceDescription,
                     CharacterDescription = c.CharacterCard.CharacterDescription,
                     History = c.CharacterCard.History
-                } : null
+                } : null,
+                Stories = storiesDTO
             };
         }
 

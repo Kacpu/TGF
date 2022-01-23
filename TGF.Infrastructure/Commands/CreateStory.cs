@@ -9,6 +9,5 @@ namespace TGF.Infrastructure.Commands
     public class CreateStory
     {
         public string Title { get; set; }
-        public DateTime CreationDate { get; set; }
     }
 }

@@ -122,6 +122,10 @@ namespace TGF.WebApp.Controllers
                     {
                         TempData["Message"] = "Błędne id profilu!";
                         TempData["Category"] = "danger";
+                        if (User.IsInRole("Admin"))
+                        {
+                            return RedirectToAction("Index");
+                        }
                         return RedirectToAction("Index", "Home");
                     }
                     else
@@ -173,9 +177,18 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
+            
             if (c == null)
             {
-                return RedirectToAction("GetOne", "Profile", new { username = User.Identity.Name });
+                TempData["Message"] = "Nie można pobrać postaci!";
+                TempData["Category"] = "danger";
+                if (User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("Index");
+                } else
+                {
+                    return RedirectToAction("GetOne", "Profile", new { username = User.Identity.Name });
+                }
             }
 
             return View(c);
@@ -222,7 +235,7 @@ namespace TGF.WebApp.Controllers
             }
         }
 
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             //var tokenString = GenerateJSONWebToken();
@@ -247,15 +260,24 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
-            if(c == null)
+            if (c == null)
             {
-                return RedirectToAction("GetOne", "Profile", new { username = User.Identity.Name });
+                TempData["Message"] = "Nie można pobrać postaci!";
+                TempData["Category"] = "danger";
+                if (User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return RedirectToAction("GetOne", "Profile", new { username = User.Identity.Name });
+                }
             }
 
             return View(c);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Delete(CharacterVM c)
         {

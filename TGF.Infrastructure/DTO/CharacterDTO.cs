@@ -14,9 +14,10 @@ namespace TGF.Infrastructure.DTO
 
         public CharacterCardDTO CharacterCard { get; set; }
 
-        //public ICollection<Story> Stories { get; set; }
-        //public ICollection<Post> Posts { get; set; }
+        public ICollection<StoryDTO> Stories { get; set; }
+        //public ICollection<PostDTO> Posts { get; set; }
 
         public int ProfileId { get; set; }
+        public ProfileDTO Profile { get; set; }
     }
 }

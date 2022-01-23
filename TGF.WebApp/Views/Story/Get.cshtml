@@ -1,0 +1,80 @@
+﻿@model TGF.WebApp.Models.StoryVM
+@using System.Security.Claims
+
+<h5 class="mb-3">Historia</h5>
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">@Model.Title</h4>
+        <p class="card-text text-muted">Data utworzenia: @Model.CreationDate.ToShortDateString()</p>
+
+        <div class="dropdown mb-3">
+            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Dodaj nową postać
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                @foreach (var ch in Model.OtherCharacters)
+                {
+                    <a class="dropdown-item" asp-controller="CharacterStory" asp-action="Create" asp-route-cId="@ch.Id" asp-route-sId="@Model.Id">
+                        @ch.Name
+                        <span class="text-muted"> [@ch.Profile.Name]</span>
+                    </a>
+                }
+            </div>
+        </div>
+
+        <h5 class="mb-3">Uczestniczące postaci</h5>
+        <ul class="list-group mb-3">
+            @foreach (var ch in Model.Characters)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a class="text-dark card-link" asp-controller="Character" asp-action="Get" asp-route-id="@ch.Id">@ch.Name [@ch.Profile.Name]</a>
+                    @if (ch.Profile.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value || User.IsInRole("Admin"))
+                    {
+                        <a class="text-dark card-link" asp-controller="CharacterStory" asp-action="Delete" asp-route-cId="@ch.Id" asp-route-sId="@Model.Id">Usuń postać</a>
+                    }
+                </li>
+            }
+        </ul>
+
+        <h5 class="mb-3">Posty</h5>
+        @*<p>
+                <a asp-action="Create">Create New</a>
+            </p>*@
+
+        @foreach (var post in Model.Posts)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title post-title" data-toggle="collapse" data-target="#content-@post.Id">@post.Title</h5>
+                    <p class="card-text data">
+                        <small class="text-muted">@post.PublicationDate.ToShortDateString()</small>
+                    </p>
+                    <p class="card-text collapse content text-justify" id="content-@post.Id">@post.Content</p>
+                </div>
+                <div class="card-body foot">
+                    <span class="mr-2">@Html.ActionLink("Edit", "Edit", new { id = post.Id })</span>
+                    <span>@Html.ActionLink("Delete", "Delete", new { id = post.Id })</span>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .post-title:hover {
+        cursor: pointer;
+        color: #6c6767;
+    }
+
+    .foot {
+        padding-top: 0;
+    }
+
+    .data {
+        margin-bottom: 0;
+    }
+
+    .content {
+        margin-top: 16px;
+    }
+</style>

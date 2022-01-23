@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,8 @@ namespace TGF.Infrastructure.Repositories
 
         public async Task<Story> AddAsync(Story story)
         {
+           // story.Characters = new List<Character>();
+            //story.Characters.Add(_appDbContext.Characters.FirstOrDefault(c => c.Id == 28));
             try
             {
                 _appDbContext.Stories.Add(story);
@@ -34,7 +37,8 @@ namespace TGF.Infrastructure.Repositories
 
         public async Task<Story> GetAsync(int id)
         {
-            return await Task.FromResult(_appDbContext.Stories.FirstOrDefault(s => s.Id == id));
+            return await Task.FromResult(_appDbContext.Stories.Include(s => s.Characters).ThenInclude(c => c.Profile)
+                .Include(s => s.Posts.OrderByDescending(p => p.PublicationDate)).FirstOrDefault(s => s.Id == id));
         }
 
         public async Task<IEnumerable<Story>> BrowseAllAsync()

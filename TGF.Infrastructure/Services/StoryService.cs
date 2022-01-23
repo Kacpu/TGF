@@ -66,11 +66,46 @@ namespace TGF.Infrastructure.Services
 
         private StoryDTO ToDTO(Story s)
         {
+            ICollection<CharacterDTO> charactersDTO = new List<CharacterDTO>();
+            if (s.Characters != null)
+            {
+                foreach (var ch in s.Characters)
+                {
+                    charactersDTO.Add(new CharacterDTO
+                    {
+                        Id = ch.Id,
+                        Name = ch.Name,
+                        Profile = ch.Profile != null ? new ProfileDTO()
+                        {
+                            Id = ch.Profile.Id,
+                            Name = ch.Profile.Name,
+                            UserID = ch.Profile.UserId
+                        } : null,
+                    });
+                }
+            }
+            ICollection<PostDTO> postsDTO = new List<PostDTO>();
+            if (s.Posts != null)
+            {
+                foreach (var p in s.Posts)
+                {
+                    postsDTO.Add(new PostDTO
+                    {
+                        Id = p.Id,
+                        Title = p.Title,
+                        PublicationDate = p.PublicationDate,
+                        Content = p.Content,
+                        Annotation = p.Annotation
+                    });
+                }
+            }
             return new StoryDTO()
             {
                 Id = s.Id,
                 Title = s.Title,
-                CreationDate = s.CreationDate
+                CreationDate = s.CreationDate,
+                Characters = charactersDTO,
+                Posts = postsDTO
             };
         }
 
@@ -79,8 +114,7 @@ namespace TGF.Infrastructure.Services
             return new Story()
             {
                 Id = sDTO.Id,
-                Title = sDTO.Title,
-                CreationDate = sDTO.CreationDate
+                Title = sDTO.Title
             };
         }
     }

@@ -61,7 +61,7 @@ namespace TGF.WebApp.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> GetOne(string username)
+        public async Task<IActionResult> GetOne(int id, string username)
         {
             //var tokenString = GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + CN();
@@ -74,10 +74,21 @@ namespace TGF.WebApp.Controllers
                 {
                     //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
 
-                    using (var response = await httpClient.GetAsync($"{_restpath}/filter?username={username}"))
+                    if(username != null)
                     {
-                        string apiResponse = await response.Content.ReadAsStringAsync();
-                        p = JsonConvert.DeserializeObject<ProfileVM>(apiResponse);
+                        using (var response = await httpClient.GetAsync($"{_restpath}/filter?username={username}"))
+                        {
+                            string apiResponse = await response.Content.ReadAsStringAsync();
+                            p = JsonConvert.DeserializeObject<ProfileVM>(apiResponse);
+                        }
+                    }
+                    else
+                    {
+                        using (var response = await httpClient.GetAsync($"{_restpath}/{id}"))
+                        {
+                            string apiResponse = await response.Content.ReadAsStringAsync();
+                            p = JsonConvert.DeserializeObject<ProfileVM>(apiResponse);
+                        }
                     }
                 }
             }
@@ -88,21 +99,26 @@ namespace TGF.WebApp.Controllers
 
             if(p == null)
             {
+                if (User.IsInRole("Admin"))
+                {
+                    TempData["Message"] = "Brak profilu użytkownika";
+                    TempData["Category"] = "danger";
+                    return RedirectToAction("Index", "Home");
+                }
                 return RedirectToAction(nameof(Create));
-                //TempData["Message"] = "Brak profilu użytkownika";
-                //TempData["Category"] = "danger";
             }
 
             return View(p);
         }
 
+        [Authorize(Roles = "Admin")]
         [Authorize]
         public IActionResult Create()
         {
             return View();
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(ProfileVM p)
         {
@@ -123,7 +139,15 @@ namespace TGF.WebApp.Controllers
                     var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
                     //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
 
-                    using var response = await httpClient.PostAsync(_restpath, content);
+                    using (var response = await httpClient.PostAsync(_restpath, content))
+                    {
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            TempData["Message"] = "Błędne id usera!";
+                            TempData["Category"] = "danger";
+                            return RedirectToAction("Index");
+                        }
+                    }
                 }
             }
             catch (Exception e)
@@ -210,7 +234,7 @@ namespace TGF.WebApp.Controllers
             }
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             //var tokenString = GenerateJSONWebToken();
@@ -238,7 +262,7 @@ namespace TGF.WebApp.Controllers
             return View(p);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Delete(ProfileVM p)
         {

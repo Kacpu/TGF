@@ -30,7 +30,6 @@ namespace TGF.WebAPI.Controllers
             StoryDTO storyDTO = new StoryDTO()
             {
                 Title = story.Title,
-                CreationDate = story.CreationDate
             };
 
             var s = await _storyService.AddAsync(storyDTO);
@@ -102,7 +101,6 @@ namespace TGF.WebAPI.Controllers
             }
 
             storyDTO.Title = story.Title ?? storyDTO.Title;
-            storyDTO.CreationDate = story.CreationDate;
 
             await _storyService.UpdateAsync(storyDTO);
 

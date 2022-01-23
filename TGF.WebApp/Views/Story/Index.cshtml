@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<TGF.WebApp.Models.StoryVM>
 
+<h5 class="mb-3">Lista historii</h5>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -31,8 +32,10 @@
                 @Html.DisplayFor(modelItem => item.CreationDate)
             </td>
             <td>
+                @Html.ActionLink("View", "Get", new { id = item.Id }) |
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                 @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+
             </td>
         </tr>
 }
