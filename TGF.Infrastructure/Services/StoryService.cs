@@ -95,7 +95,18 @@ namespace TGF.Infrastructure.Services
                         Title = p.Title,
                         PublicationDate = p.PublicationDate,
                         Content = p.Content,
-                        Annotation = p.Annotation
+                        Annotation = p.Annotation,
+                        Character = p.Character != null ? new CharacterDTO()
+                        {
+                            Id = p.Character.Id,
+                            Name = p.Character.Name,
+                            Profile = p.Character.Profile != null ? new ProfileDTO()
+                            {
+                                Id = p.Character.Profile.Id,
+                                Name = p.Character.Profile.Name,
+                                UserID = p.Character.Profile.UserId,
+                            } : null
+                        } : null
                     });
                 }
             }

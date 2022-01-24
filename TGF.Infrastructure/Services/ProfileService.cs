@@ -83,10 +83,23 @@ namespace TGF.Infrastructure.Services
             {
                 foreach (var ch in p.Characters)
                 {
+                    ICollection<StoryDTO> storiesDTO = new List<StoryDTO>();
+                    if (ch.Stories != null)
+                    {
+                        foreach (var story in ch.Stories)
+                        {
+                            storiesDTO.Add(new StoryDTO
+                            {
+                                Id = story.Id,
+                            });
+                        }
+                    }
+
                     charactersDTO.Add(new CharacterDTO
                     {
                         Id = ch.Id,
-                        Name = ch.Name
+                        Name = ch.Name,
+                        Stories = storiesDTO
                     });
                 }
             }

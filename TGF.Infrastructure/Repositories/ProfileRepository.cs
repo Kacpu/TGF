@@ -46,7 +46,7 @@ namespace TGF.Infrastructure.Repositories
 
         public async Task<Profile> FindByUsername(string username)
         {
-            return await Task.FromResult(_appDbContext.Profiles.Include(p => p.AppUser).Include(p => p.Characters)
+            return await Task.FromResult(_appDbContext.Profiles.Include(p => p.AppUser).Include(p => p.Characters).ThenInclude(c => c.Stories)
                 .FirstOrDefault(p => p.AppUser.UserName == username));
         }
 

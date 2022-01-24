@@ -16,6 +16,9 @@
                 <textarea asp-for="Content" class="form-control" rows="10"></textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
+            <input asp-for="ProfileId" class="form-control" hidden />
+            <input asp-for="CharacterId" class="form-control" hidden />
+            <input asp-for="StoryId" class="form-control" hidden />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -23,9 +26,20 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@{
+    if (User.IsInRole("Admin"))
+    {
+        <div>
+            <a asp-action="Index">Back to List</a>
+        </div>
+    }
+    else if (User.Identity.IsAuthenticated)
+    {
+        <div>
+            <a class="" asp-controller="Story" asp-action="Get" asp-route-id="@Model.StoryId">Powrót do historii</a>
+        </div>
+    }
+}
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

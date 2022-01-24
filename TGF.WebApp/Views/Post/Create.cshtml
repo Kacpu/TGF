@@ -6,6 +6,19 @@
     <div class="col">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (!User.IsInRole("Admin"))
+            {
+                <div class="form-group">
+                    <label class="control-label">Wybierz postać</label>
+                    <select asp-for="CharacterId" class="custom-select" id="choosenCharacter">
+                        @foreach (CharacterVM ch in Model.Profile.Characters.Where(c => c.Stories.Where(s => s.Id == Model.StoryId).Count() > 0))
+                        {
+                            <option value="@ch.Id">@ch.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CharacterId" class="text-danger"></span>
+                </div>
+            }
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -16,6 +29,8 @@
                 <textarea asp-for="Content" class="form-control" rows="10"></textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
+            <input asp-for="ProfileId" class="form-control" hidden />
+            <input asp-for="StoryId" class="form-control" hidden />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -23,9 +38,20 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@{
+    if (User.IsInRole("Admin"))
+    {
+        <div>
+            <a asp-action="Index">Back to List</a>
+        </div>
+    }
+    else if (User.Identity.IsAuthenticated)
+    {
+        <div>
+            <a class="" asp-controller="Story" asp-action="Get" asp-route-id="@Model.StoryId">Powrót do historii</a>
+        </div>
+    }
+}
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

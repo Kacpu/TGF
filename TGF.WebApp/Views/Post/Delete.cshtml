@@ -4,28 +4,48 @@
 <div>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             Tytuł
         </dt>
-        <dd class = "col-10">
+        <dd class="col-10">
             @Html.DisplayFor(model => model.Title)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             Data publikacji
         </dt>
-        <dd class = "col-10">
+        <dd class="col-10">
             @Html.DisplayFor(model => model.PublicationDate)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
+            Autor
+        </dt>
+        <dd class="col-10">
+            @Html.DisplayFor(model => model.Profile.Name)
+        </dd>
+        <dt class="col-sm-2">
             Kontent
         </dt>
-        <dd class = "col-10">
+        <dd class="col-10">
             @Html.DisplayFor(model => model.Content)
         </dd>
     </dl>
-    
+
     <form asp-action="Delete">
+        <input asp-for="StoryId" class="form-control" hidden />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        @{
+            if (User.IsInRole("Admin"))
+            {
+                <div>
+                    <a asp-action="Index">Back to List</a>
+                </div>
+            }
+            else if (User.Identity.IsAuthenticated)
+            {
+                <div>
+                    <a class="" asp-controller="Story" asp-action="Get" asp-route-id="@Model.StoryId">Powrót do historii</a>
+                </div>
+            }
+        }
     </form>
 </div>

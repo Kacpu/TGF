@@ -5,31 +5,39 @@
     <a asp-action="Create">Create New</a>
 </p>
 
-@foreach (var item in Model)
+@foreach (var post in Model)
 {
-<div class="card mb-3">
-    <div class="card-body">
-        <h5 class="card-title" data-toggle="collapse" data-target="#content-@item.Id"> @Html.DisplayFor(modelItem => item.Title)</h5>
-        <p class="card-text data"><small class="text-muted">@Html.DisplayFor(modelItem => item.PublicationDate)</small></p>
-        <p class="card-text collapse content" id="content-@item.Id">@Html.DisplayFor(modelItem => item.Content)</p>
-        @*<p class="card-text collapse" id="content-hide-@item.Id">
-            @Html.DisplayFor(modelItem => item.Short)...
-            <a href="#" data-toggle="collapse" data-target="#content-show-@item.Id" onclick="toggle(@item.Id)"> Show more</a>
-        </p>
-        <p class="card-text collapse" id="content-show-@item.Id" hidden>
-            @Html.DisplayFor(modelItem => item.Content)
-            <a href="#" data-toggle="collapse" data-target="#content-hide-@item.Id" onclick="toggle(@item.Id)"> Hide</a>
-        </p>*@
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title post-title" data-toggle="collapse" data-target="#content-@post.Id">
+               @post.Title
+            </h5>
+            <p class="card-text data">
+                <small class="text-muted">@post.PublicationDate</small>
+            </p>
+            <p class="card-text collapse content text-justify" id="content-@post.Id">@post.Content</p>
+
+            @*<p class="card-text collapse" id="content-hide-@item.Id">
+                    @Html.DisplayFor(modelItem => item.Short)...
+                    <a href="#" data-toggle="collapse" data-target="#content-show-@item.Id" onclick="toggle(@item.Id)"> Show more</a>
+                </p>
+                <p class="card-text collapse" id="content-show-@item.Id" hidden>
+                    @Html.DisplayFor(modelItem => item.Content)
+                    <a href="#" data-toggle="collapse" data-target="#content-hide-@item.Id" onclick="toggle(@item.Id)"> Hide</a>
+                </p>*@
+        </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+            <p class="text-muted" style="margin: 0;">Autor: @post.Profile.Name</p>
+            <div>
+                <a class="card-link" asp-action="Edit" asp-route-id="@post.Id">Edytuj</a>
+                <a class="card-link" asp-action="Delete" asp-route-id="@post.Id">Usuń</a>
+            </div>
+        </div>
     </div>
-    <div class="card-body foot">
-        <span class="mr-2">@Html.ActionLink("Edit", "Edit", new { id = item.Id })</span>
-        <span>@Html.ActionLink("Delete", "Delete", new { id = item.Id })</span>
-    </div>
-</div>
 }
 
 <style>
-    .card-title:hover {
+    .post-title:hover {
         cursor: pointer;
         color: #6c6767;
     }

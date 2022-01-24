@@ -20,7 +20,7 @@ namespace TGF.Infrastructure.Services
 
         public async Task<PostDTO> AddAsync(PostDTO post)
         {
-            var p = await _postRepository.AddAsync(await ToDomain(post));
+            var p = await _postRepository.AddAsync(ToDomain(post));
             return p != null ? ToDTO(p) : null;
         }
 
@@ -52,7 +52,7 @@ namespace TGF.Infrastructure.Services
         {
             if (postDTO != null)
             {
-                await _postRepository.UpdateAsync(await ToDomain(postDTO));
+                await _postRepository.UpdateAsync(ToDomain(postDTO));
             }
         }
 
@@ -60,7 +60,7 @@ namespace TGF.Infrastructure.Services
         {
             if (postDTO != null)
             {
-                await _postRepository.DelAsync(await ToDomain(postDTO));
+                await _postRepository.DelAsync(ToDomain(postDTO));
             }
         }
 
@@ -72,19 +72,35 @@ namespace TGF.Infrastructure.Services
                 Title = p.Title,
                 PublicationDate = p.PublicationDate,
                 Content = p.Content,
-                Annotation = p.Annotation
+                Annotation = p.Annotation,
+                ProfileId = p.ProfileId,
+                CharacterId = p.CharacterId ?? 0,
+                StoryId = p.StoryId ?? 0,
+                Profile = p.Profile != null ? new ProfileDTO()
+                {
+                    Id = p.Profile.Id,
+                    Name = p.Profile.Name,
+                    UserID = p.Profile.UserId,
+                } : null,
+                Character = p.Character != null ? new CharacterDTO()
+                {
+                    Id = p.Character.Id,
+                    Name = p.Character.Name,
+                } : null
             };
         }
 
-        private async Task<Post> ToDomain(PostDTO pDTO)
+        private Post ToDomain(PostDTO pDTO)
         {
             return new Post()
             {
                 Id = pDTO.Id,
                 Title = pDTO.Title,
-                PublicationDate = pDTO.PublicationDate,
                 Content = pDTO.Content,
-                Annotation = pDTO.Annotation
+                Annotation = pDTO.Annotation,
+                ProfileId = pDTO.ProfileId,
+                CharacterId = pDTO.CharacterId == 0 ? null : pDTO.CharacterId,
+                StoryId = pDTO.StoryId == 0 ? null : pDTO.StoryId
             };
         }
     }

@@ -73,6 +73,17 @@ namespace TGF.WebApp.Controllers
                         s = JsonConvert.DeserializeObject<StoryVM>(apiResponse);
                     }
 
+                    if (s == null)
+                    {
+                        TempData["Message"] = "Brak Historii!";
+                        TempData["Category"] = "danger";
+                        if (User.IsInRole("Admin"))
+                        {
+                            return RedirectToAction("Index");
+                        }
+                        return RedirectToAction("Get", "Character", new { id = character });
+                    }
+
                     using (var response = await httpClient.GetAsync($"{GetHostUrl().Content}character"))
                     {
                         string apiResponse = await response.Content.ReadAsStringAsync();
@@ -87,13 +98,6 @@ namespace TGF.WebApp.Controllers
             catch (Exception e)
             {
                 return View(e);
-            }
-
-            if (s == null)
-            {
-                TempData["Message"] = "Brak Historii!";
-                TempData["Category"] = "danger";
-                return RedirectToAction("Get", "Character", new { id = character });
             }
 
             return View(s);

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
@@ -31,11 +32,12 @@ namespace TGF.WebApp.Controllers
             return ControllerContext.RouteData.Values["controller"].ToString();
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             //var tokenString = GenerateJSONWebToken();
 
-            //string _restpath = "https://localhost:5001/profile";
+            //string _restpath = "https://localhost:5001/post";
             string _restpath = GetHostUrl().Content + CN();
 
             List<PostVM> postsList = new List<PostVM>();
@@ -52,19 +54,58 @@ namespace TGF.WebApp.Controllers
 
             foreach(var post in postsList)
             {
-                post.Short = post.Content.Substring(0, post.Content.Length < 200 ? post.Content.Length : 200);
+                if(post.Content != null)
+                {
+                    post.Short = post.Content.Substring(0, post.Content.Length < 200 ? post.Content.Length : 200);
+                }
             }
 
             return View(postsList);
         }
 
-        //[Authorize]
-        public IActionResult Create()
+        [Authorize]
+        public async Task<IActionResult> Create(int story)
         {
-            return View();
+            PostVM post = new PostVM()
+            {
+                StoryId = story
+            };
+
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    using (var response = await httpClient.GetAsync($"{GetHostUrl().Content}profile/filter?username={User.Identity.Name}"))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        ProfileVM pr = JsonConvert.DeserializeObject<ProfileVM>(apiResponse);
+                        if (pr != null)
+                        {
+                            post.ProfileId = pr.Id;
+                            post.Profile = pr;
+                        }
+                        else
+                        {
+                            TempData["Message"] = "Nie udało się pobrać profilu użytkownika!";
+                            TempData["Category"] = "danger";
+                            if (User.IsInRole("Admin"))
+                            {
+                                return RedirectToAction("Index");
+                            }
+                            return RedirectToAction("Index", "Home");
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return View(e);
+            }
+
+            return View(post);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(PostVM p)
         {
@@ -79,7 +120,7 @@ namespace TGF.WebApp.Controllers
                     var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
                     //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
 
-                    using var response = await httpClient.PostAsync(_restpath, content);
+                    var response = await httpClient.PostAsync(_restpath, content);
                 }
             }
             catch (Exception e)
@@ -87,10 +128,17 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
-            return RedirectToAction(nameof(Index));
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return RedirectToAction("Get", "Story", new { id = p.StoryId });
+            }
         }
 
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
             //var tokenString = GenerateJSONWebToken();
@@ -115,10 +163,24 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
+            if (p == null)
+            {
+                TempData["Message"] = "Nie można pobrać postu!";
+                TempData["Category"] = "danger";
+                if (User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return RedirectToAction("GetOne", "Profile", new { username = User.Identity.Name });
+                }
+            }
+
             return View(p);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Edit(PostVM p)
         {
@@ -147,10 +209,17 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
-            return View(pResult);
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return RedirectToAction("Get", "Story", new { id = pResult.StoryId });
+            }
         }
 
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             //var tokenString = GenerateJSONWebToken();
@@ -175,10 +244,24 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
+            if (p == null)
+            {
+                TempData["Message"] = "Nie można pobrać postu!";
+                TempData["Category"] = "danger";
+                if (User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return RedirectToAction("GetOne", "Profile", new { username = User.Identity.Name });
+                }
+            }
+
             return View(p);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Delete(PostVM p)
         {
@@ -198,7 +281,14 @@ namespace TGF.WebApp.Controllers
                 return View(e);
             }
 
-            return RedirectToAction(nameof(Index));
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return RedirectToAction("Get", "Story", new { id = p.StoryId });
+            }
         }
     }
 }

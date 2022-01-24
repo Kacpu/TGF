@@ -9,7 +9,6 @@ namespace TGF.Infrastructure.Commands
     public class UpdatePost
     {
         public string Title { get; set; }
-        public DateTime PublicationDate { get; set; }
         public string Content { get; set; }
         public string Annotation { get; set; }
     }

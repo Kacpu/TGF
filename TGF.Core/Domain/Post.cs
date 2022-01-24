@@ -16,7 +16,7 @@ namespace TGF.Core.Domain
 
         public ICollection<Comment> Comments { get; set; }
 
-        public int? ProfileId { get; set; }//?
+        public int ProfileId { get; set; }
         public Profile Profile { get; set; }
 
         public int? CharacterId { get; set; }

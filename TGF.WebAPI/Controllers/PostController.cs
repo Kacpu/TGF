@@ -32,7 +32,9 @@ namespace TGF.WebAPI.Controllers
                 Title = post.Title,
                 Content = post.Content,
                 Annotation = post.Annotation,
-                PublicationDate = post.PublicationDate
+                ProfileId = post.ProfileId,
+                CharacterId = post.CharacterId,
+                StoryId = post.StoryId
             };
 
             var p = await _postService.AddAsync(postDTO);
@@ -106,7 +108,6 @@ namespace TGF.WebAPI.Controllers
             postDTO.Title = post.Title ?? postDTO.Title;
             postDTO.Content = post.Content ?? postDTO.Content;
             postDTO.Annotation = post.Annotation ?? postDTO.Annotation;
-            postDTO.PublicationDate = post.PublicationDate;
 
             await _postService.UpdateAsync(postDTO);
 
