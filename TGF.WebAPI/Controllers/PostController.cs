@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ using TGF.Infrastructure.Services;
 
 namespace TGF.WebAPI.Controllers
 {
+    [Authorize]
     [Route("[Controller]")]
     public class PostController : Controller
     {
@@ -73,22 +75,6 @@ namespace TGF.WebAPI.Controllers
 
             return Json(postsDTO);
         }
-
-
-        ////https://localhost:5001/skijumper/filter?name=alan&country=ger
-        //[HttpGet("filter")]
-        //public async Task<IActionResult> GetByFilter(string name, string country)
-        //{
-        //    IEnumerable<SkiJumperDTO> skiJumpersDTO = await _skiJumperService.BrowseAllByFilterAsync(name, country);
-
-        //    if (skiJumpersDTO == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return Json(skiJumpersDTO);
-        //}
-
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePost([FromBody] UpdatePost post, int id)

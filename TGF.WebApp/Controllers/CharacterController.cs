@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using TGF.WebApp.Models;
@@ -16,11 +17,13 @@ namespace TGF.WebApp.Controllers
     {
         public IConfiguration Configuration;
         public CharacterCardController _characterCardController;
+        private JWToken JWToken;
 
-        public CharacterController(IConfiguration configuration, CharacterCardController characterCardController)
+        public CharacterController(IConfiguration configuration, CharacterCardController characterCardController, JWToken jWToken)
         {
             Configuration = configuration;
             _characterCardController = characterCardController;
+            JWToken = jWToken;
         }
 
         public ContentResult GetHostUrl()
@@ -37,7 +40,7 @@ namespace TGF.WebApp.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            //var tokenString = GenerateJSONWebToken();
+            var tokenString = JWToken.GenerateJSONWebToken();
 
             string _restpath = GetHostUrl().Content + CN();
 
@@ -45,7 +48,7 @@ namespace TGF.WebApp.Controllers
 
             using (var httpClient = new HttpClient())
             {
-                //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
 
                 using (var response = await httpClient.GetAsync(_restpath))
                 {
@@ -60,7 +63,7 @@ namespace TGF.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> Get(int id)
         {
-            //var tokenString = GenerateJSONWebToken();
+            var tokenString = JWToken.GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + CN();
 
             CharacterVM c = new CharacterVM();
@@ -69,7 +72,7 @@ namespace TGF.WebApp.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
                     using (var response = await httpClient.GetAsync($"{_restpath}/{id}"))
                     {
                         string apiResponse = await response.Content.ReadAsStringAsync();
@@ -104,7 +107,7 @@ namespace TGF.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CharacterVM c)
         {
-            // var tokenString = GenerateJSONWebToken();
+            var tokenString = JWToken.GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + CN();
             int cId = 0;
 
@@ -114,7 +117,7 @@ namespace TGF.WebApp.Controllers
                 {
                     string jsonString = System.Text.Json.JsonSerializer.Serialize(c);
                     var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
-                    //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
 
                     var response = await httpClient.PostAsync(_restpath, content);
 
@@ -155,7 +158,7 @@ namespace TGF.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
-            //var tokenString = GenerateJSONWebToken();
+            var tokenString = JWToken.GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + CN();
 
             CharacterVM c = new CharacterVM();
@@ -164,7 +167,7 @@ namespace TGF.WebApp.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
                     using (var response = await httpClient.GetAsync($"{_restpath}/{id}"))
                     {
                         string apiResponse = await response.Content.ReadAsStringAsync();
@@ -198,7 +201,7 @@ namespace TGF.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(CharacterVM c)
         {
-            //var tokenString = GenerateJSONWebToken();
+            var tokenString = JWToken.GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + CN();
 
             CharacterVM cResult = new CharacterVM();
@@ -209,7 +212,7 @@ namespace TGF.WebApp.Controllers
                 {
                     string jsonString = System.Text.Json.JsonSerializer.Serialize(c);
                     var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
-                    //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
 
                     using (var response = await httpClient.PutAsync($"{ _restpath}/{c.Id}", content))
                     {
@@ -238,7 +241,7 @@ namespace TGF.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
-            //var tokenString = GenerateJSONWebToken();
+            var tokenString = JWToken.GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + CN();
 
             CharacterVM c = new CharacterVM();
@@ -247,7 +250,7 @@ namespace TGF.WebApp.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
                     using (var response = await httpClient.GetAsync($"{ _restpath}/{id}"))
                     {
                         string apiResponse = await response.Content.ReadAsStringAsync();
@@ -281,7 +284,7 @@ namespace TGF.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(CharacterVM c)
         {
-            //var tokenString = GenerateJSONWebToken();
+            var tokenString = JWToken.GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + CN();
            // await _characterCardController.DeleteCard(c.CharacterCard);
 
@@ -289,7 +292,7 @@ namespace TGF.WebApp.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
                     var response = await httpClient.DeleteAsync($"{ _restpath}/{c.Id}");
                 }
             }

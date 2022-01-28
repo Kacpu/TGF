@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using TGF.Core.Domain;
@@ -17,12 +18,14 @@ namespace TGF.WebApp.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
         public IConfiguration Configuration;
+        private JWToken JWToken;
 
-        public AccountController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IConfiguration configuration)
+        public AccountController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IConfiguration configuration, JWToken jWToken)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             Configuration = configuration;
+            JWToken = jWToken;
         }
 
         public IActionResult Login()
@@ -109,7 +112,7 @@ namespace TGF.WebApp.Controllers
                 UserId = userId
             };
 
-            // var tokenString = GenerateJSONWebToken();
+            var tokenString = JWToken.GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + "profile";
 
             try
@@ -118,7 +121,7 @@ namespace TGF.WebApp.Controllers
                 {
                     string jsonString = System.Text.Json.JsonSerializer.Serialize(profile);
                     var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
-                    //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
 
                     var response = await httpClient.PostAsync(_restpath, content);
                 }

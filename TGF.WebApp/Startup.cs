@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using TGF.Core.Domain;
 using TGF.Infrastructure.Repositories;
 using TGF.WebApp.Controllers;
+using TGF.WebApp.Models;
 
 namespace TGF.WebApp
 {
@@ -28,6 +29,8 @@ namespace TGF.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<JWToken>();
+
             services.AddControllersWithViews();
 
             services.AddScoped<CharacterCardController>();

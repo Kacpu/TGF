@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using TGF.WebApp.Models;
@@ -15,10 +16,12 @@ namespace TGF.WebApp.Controllers
     public class CharacterStoryController : Controller
     {
         public IConfiguration Configuration;
+        private JWToken JWToken;
 
-        public CharacterStoryController(IConfiguration configuration)
+        public CharacterStoryController(IConfiguration configuration, JWToken jWToken)
         {
             Configuration = configuration;
+            JWToken = jWToken;
         }
 
         public ContentResult GetHostUrl()
@@ -69,7 +72,7 @@ namespace TGF.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> Create(int sId, int cId)
         {
-            //var tokenString = GenerateJSONWebToken();
+            var tokenString = JWToken.GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + CN();
 
             CharacterStoryVM cs = new CharacterStoryVM()
@@ -84,7 +87,7 @@ namespace TGF.WebApp.Controllers
                 {
                     string jsonString = System.Text.Json.JsonSerializer.Serialize(cs);
                     var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
-                    //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
 
                     using var response = await httpClient.PostAsync(_restpath, content);
                 }
@@ -103,14 +106,14 @@ namespace TGF.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(int sId, int cId)
         {
-            //var tokenString = GenerateJSONWebToken();
+            var tokenString = JWToken.GenerateJSONWebToken();
             string _restpath = GetHostUrl().Content + CN();
 
             try
             {
                 using (var httpClient = new HttpClient())
                 {
-                    //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
                     using var response = await httpClient.DeleteAsync($"{_restpath}?cId={cId}&sId={sId}");
                 }
             }

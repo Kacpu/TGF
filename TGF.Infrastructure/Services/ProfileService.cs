@@ -28,10 +28,10 @@ namespace TGF.Infrastructure.Services
 
             if (p != null)
             {
-
                 foreach(var admin in await _adminRepository.GetAllAsync())
                 {
-                    await _emailSender.SendEmailAsync(admin.Email, "TGF App - new user", $"A new user has been registered:<br>Username: {p.AppUser.UserName}");
+                    await _emailSender.SendEmailAsync(admin.Email, "TGF App - new user",
+                        $"A new user has been registered:<br>Username: {p.AppUser.UserName}");
                 }
                 return ToDTO(p);
             }

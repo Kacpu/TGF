@@ -61,7 +61,6 @@ namespace TGF.WebAPI
             services.AddScoped<ICharacterStoryRepository, CharacterStoryRepository>();
             services.AddScoped<ICharacterStoryService, CharacterStoryService>();
 
-            services.AddScoped<IUserRoleRepository, UserRoleRepository>();
             services.AddScoped<IAdminRepository, AdminRepository>();
 
             services.AddTransient<IEmailSender, EmailSender>();
@@ -84,8 +83,8 @@ namespace TGF.WebAPI
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
-                        ValidAudience = "http://tomaszles.pl",
-                        ValidIssuer = "http://tomaszles.pl",
+                        ValidAudience = "https://localhost:5001",
+                        ValidIssuer = "https://localhost:5001",
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SuperTajneHaslo111222"))
                     };
                 });

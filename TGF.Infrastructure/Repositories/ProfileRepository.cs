@@ -25,7 +25,7 @@ namespace TGF.Infrastructure.Repositories
             {
                 _appDbContext.Profiles.Add(profile);
                 _appDbContext.SaveChanges();
-                return await Task.FromResult(_appDbContext.Profiles.Include(p => p.AppUser).FirstOrDefault(p => profile.Id == profile.Id));
+                return await Task.FromResult(_appDbContext.Profiles.Include(p => p.AppUser).FirstOrDefault(p => p.Id == profile.Id));
             }
             catch (Exception ex)
             {

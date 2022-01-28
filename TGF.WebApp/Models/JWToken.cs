@@ -25,7 +25,7 @@ namespace TGF.WebApp.Models
         public string SecretKey { get; set; }
         public string TokenString { get; set; }
 
-        private string GenerateJSONWebToken()
+        public string GenerateJSONWebToken()
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes($"{SecretKey}"));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

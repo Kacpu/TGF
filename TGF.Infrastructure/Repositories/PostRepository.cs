@@ -40,7 +40,8 @@ namespace TGF.Infrastructure.Repositories
 
         public async Task<IEnumerable<Post>> BrowseAllAsync()
         {
-            return await Task.FromResult(_appDbContext.Posts.Include(p => p.Profile).Include(p => p.Character).OrderByDescending(p => p.PublicationDate));
+            return await Task.FromResult(_appDbContext.Posts.Include(p => p.Profile).Include(p => p.Character)
+                .OrderByDescending(p => p.PublicationDate));
         }
 
         public async Task UpdateAsync(Post updatedP)

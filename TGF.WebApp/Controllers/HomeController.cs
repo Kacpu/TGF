@@ -20,6 +20,7 @@ namespace TGF.WebApp.Controllers
 
         public IActionResult Index()
         {
+            _logger.LogInformation("We are in home!");
             return View();
         }
 

@@ -14,11 +14,13 @@ namespace TGF.WebApp.Controllers
     public class CommentController : Controller
     {
         public IConfiguration Configuration;
+        private JWToken JWToken;
 
-        public CommentController(IConfiguration configuration)
+        public CommentController(IConfiguration configuration, JWToken jWToken)
         {
             Configuration = configuration;
-        }
+            JWToken = jWToken;
+    }
 
         public ContentResult GetHostUrl()
         {
