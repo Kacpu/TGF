@@ -13,7 +13,7 @@ namespace TGF.Infrastructure.Services
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
             string fromMail = "kacpert757@gmail.com";
-            string fromPassword = "phhnfvomtnxfbzsg";
+            string fromPassword = "phhnfvomtnxfbzsg"; //hasło wygenerować dla poczty z google -> hasła do aplikacji
 
             MailMessage mail = new MailMessage();
             mail.From = new MailAddress(fromMail);

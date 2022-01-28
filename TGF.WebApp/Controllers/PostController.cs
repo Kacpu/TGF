@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,11 +18,13 @@ namespace TGF.WebApp.Controllers
     {
         public IConfiguration Configuration;
         private JWToken JWToken;
+        private readonly ILogger<PostController> _logger;
 
-        public PostController(IConfiguration configuration, JWToken jWToken)
+        public PostController(IConfiguration configuration, JWToken jWToken, ILogger<PostController> logger)
         {
             Configuration = configuration;
             JWToken = jWToken;
+            _logger = logger;
         }
 
         public ContentResult GetHostUrl()
@@ -50,6 +53,7 @@ namespace TGF.WebApp.Controllers
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
                 using (var response = await httpClient.GetAsync(_restpath))
                 {
+                    _logger.LogError("aaa");
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     postsList = JsonConvert.DeserializeObject<List<PostVM>>(apiResponse);
                 }
