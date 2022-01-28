@@ -25,7 +25,7 @@ namespace TGF.Infrastructure.Repositories
             {
                 _appDbContext.Profiles.Add(profile);
                 _appDbContext.SaveChanges();
-                return await Task.FromResult(profile);
+                return await Task.FromResult(_appDbContext.Profiles.Include(p => p.AppUser).FirstOrDefault(p => profile.Id == profile.Id));
             }
             catch (Exception ex)
             {
@@ -36,7 +36,7 @@ namespace TGF.Infrastructure.Repositories
 
         public async Task<Profile> GetAsync(int id)
         {
-            return await Task.FromResult(_appDbContext.Profiles.Include(p => p.Characters).FirstOrDefault(p => p.Id == id));
+            return await Task.FromResult(_appDbContext.Profiles.Include(p => p.AppUser).Include(p => p.Characters).FirstOrDefault(p => p.Id == id));
         }
 
         public async Task<IEnumerable<Profile>> BrowseAllAsync()

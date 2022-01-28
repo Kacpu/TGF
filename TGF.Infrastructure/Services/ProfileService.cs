@@ -12,16 +12,33 @@ namespace TGF.Infrastructure.Services
     public class ProfileService : IProfileService
     {
         private readonly IProfileRepository _profileRepository;
+        private readonly IAdminRepository _adminRepository;
+        private readonly IEmailSender _emailSender;
 
-        public ProfileService(IProfileRepository profileRepository)
+        public ProfileService(IProfileRepository profileRepository, IAdminRepository adminRepository,IEmailSender emailSender)
         {
             _profileRepository = profileRepository;
+            _adminRepository = adminRepository;
+            _emailSender = emailSender;
         }
 
         public async Task<ProfileDTO> AddAsync(ProfileDTO profile)
         {
             var p = await _profileRepository.AddAsync(await ToDomain(profile));
-            return p != null ? ToDTO(p) : null;
+
+            if (p != null)
+            {
+
+                foreach(var admin in await _adminRepository.GetAllAsync())
+                {
+                    await _emailSender.SendEmailAsync(admin.Email, "TGF App - new user", $"A new user has been registered:<br>Username: {p.AppUser.UserName}");
+                }
+                return ToDTO(p);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<ProfileDTO> GetAsync(int id)

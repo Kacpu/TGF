@@ -61,6 +61,11 @@ namespace TGF.WebAPI
             services.AddScoped<ICharacterStoryRepository, CharacterStoryRepository>();
             services.AddScoped<ICharacterStoryService, CharacterStoryService>();
 
+            services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+            services.AddScoped<IAdminRepository, AdminRepository>();
+
+            services.AddTransient<IEmailSender, EmailSender>();
+
             services.AddDbContext<AppDbContext>(
                 options => options.UseSqlServer(
                     Configuration.GetConnectionString("TGFConnectionString")));
