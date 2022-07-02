@@ -4,7 +4,7 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>This is TGF Web App!</p>
+    <p>Start writing fabulous stories!</p>
     @if (User.Identity.IsAuthenticated) {
         <a class="nav-link" asp-area="" asp-controller="Profile" asp-action="GetOne" asp-route-username="@User.Identity.Name">
             See your profile
