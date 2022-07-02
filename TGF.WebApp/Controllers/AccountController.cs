@@ -126,7 +126,7 @@ namespace TGF.WebApp.Controllers
                     var response = await httpClient.PostAsync(_restpath, content);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
         }

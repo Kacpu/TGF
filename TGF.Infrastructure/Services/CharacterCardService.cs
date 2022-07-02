@@ -20,7 +20,7 @@ namespace TGF.Infrastructure.Services
 
         public async Task<CharacterCardDTO> AddAsync(CharacterCardDTO characterCard)
         {
-            var c = await _characterCardRepository.AddAsync(await ToDomain(characterCard));
+            var c = await _characterCardRepository.AddAsync(ToDomain(characterCard));
             return c != null ? ToDTO(c) : null;
         }
 
@@ -52,7 +52,7 @@ namespace TGF.Infrastructure.Services
         {
             if (characterCardDTO != null)
             {
-                await _characterCardRepository.UpdateAsync(await ToDomain(characterCardDTO));
+                await _characterCardRepository.UpdateAsync(ToDomain(characterCardDTO));
             }
         }
 
@@ -60,7 +60,7 @@ namespace TGF.Infrastructure.Services
         {
             if (characterCardDTO != null)
             {
-                await _characterCardRepository.DelAsync(await ToDomain(characterCardDTO));
+                await _characterCardRepository.DelAsync(ToDomain(characterCardDTO));
             }
         }
 
@@ -76,7 +76,7 @@ namespace TGF.Infrastructure.Services
             };
         }
 
-        private async Task<CharacterCard> ToDomain(CharacterCardDTO cDTO)
+        private CharacterCard ToDomain(CharacterCardDTO cDTO)
         {
             return new CharacterCard()
             {

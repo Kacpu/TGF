@@ -10,7 +10,7 @@ using TGF.Infrastructure.Services;
 
 namespace TGF.WebAPI.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("[Controller]")]
     public class ProfileController : Controller
     {

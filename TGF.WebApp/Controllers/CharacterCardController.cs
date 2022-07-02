@@ -227,7 +227,7 @@ namespace TGF.WebApp.Controllers
                     using var response = await httpClient.PostAsync(_restpath, content);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
         }
@@ -252,7 +252,7 @@ namespace TGF.WebApp.Controllers
                     cResult = JsonConvert.DeserializeObject<CharacterCardVM>(apiResponse);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
         }
@@ -270,7 +270,7 @@ namespace TGF.WebApp.Controllers
                     using var response = await httpClient.DeleteAsync($"{ _restpath}/{c.Id}");
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
         }

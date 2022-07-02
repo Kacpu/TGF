@@ -24,7 +24,7 @@ namespace TGF.Infrastructure.Services
 
         public async Task<ProfileDTO> AddAsync(ProfileDTO profile)
         {
-            var p = await _profileRepository.AddAsync(await ToDomain(profile));
+            var p = await _profileRepository.AddAsync(ToDomain(profile));
 
             if (p != null)
             {
@@ -81,7 +81,7 @@ namespace TGF.Infrastructure.Services
         {
             if (profileDTO != null)
             {
-                await _profileRepository.UpdateAsync(await ToDomain(profileDTO));
+                await _profileRepository.UpdateAsync(ToDomain(profileDTO));
             }
         }
 
@@ -89,7 +89,7 @@ namespace TGF.Infrastructure.Services
         {
             if (profileDTO != null)
             {
-                await _profileRepository.DelAsync(await ToDomain(profileDTO));
+                await _profileRepository.DelAsync(ToDomain(profileDTO));
             }
         }
 
@@ -134,7 +134,7 @@ namespace TGF.Infrastructure.Services
             };
         }
 
-        private async Task<Profile> ToDomain(ProfileDTO pDTO)
+        private Profile ToDomain(ProfileDTO pDTO)
         {
             return new Profile()
             {

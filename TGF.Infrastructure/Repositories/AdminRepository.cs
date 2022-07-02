@@ -18,7 +18,6 @@ namespace TGF.Infrastructure.Repositories
             _appDbContext = appDbContext;
         }
 
-
         public async Task<IEnumerable<AppUser>> GetAllAsync()
         {
             List<AppUser> admins = new List<AppUser>();

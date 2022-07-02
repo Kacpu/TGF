@@ -20,7 +20,7 @@ namespace TGF.Infrastructure.Services
 
         public async Task<StoryDTO> AddAsync(StoryDTO story)
         {
-            var s = await _storyRepository.AddAsync(await ToDomain(story));
+            var s = await _storyRepository.AddAsync(ToDomain(story));
             return s != null ? ToDTO(s) : null;
         }
 
@@ -52,7 +52,7 @@ namespace TGF.Infrastructure.Services
         {
             if (storyDTO != null)
             {
-                await _storyRepository.UpdateAsync(await ToDomain(storyDTO));
+                await _storyRepository.UpdateAsync(ToDomain(storyDTO));
             }
         }
 
@@ -60,7 +60,7 @@ namespace TGF.Infrastructure.Services
         {
             if (storyDTO != null)
             {
-                await _storyRepository.DelAsync(await ToDomain(storyDTO));
+                await _storyRepository.DelAsync(ToDomain(storyDTO));
             }
         }
 
@@ -120,7 +120,7 @@ namespace TGF.Infrastructure.Services
             };
         }
 
-        private async Task<Story> ToDomain(StoryDTO sDTO)
+        private Story ToDomain(StoryDTO sDTO)
         {
             return new Story()
             {

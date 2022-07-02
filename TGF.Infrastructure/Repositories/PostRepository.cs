@@ -26,7 +26,7 @@ namespace TGF.Infrastructure.Repositories
                 _appDbContext.SaveChanges();
                 return await Task.FromResult(post);
             }
-            catch (Exception ex)
+            catch
             {
                 //await Task.FromException(ex);
                 return null;

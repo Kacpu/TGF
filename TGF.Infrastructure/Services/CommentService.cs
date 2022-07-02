@@ -20,7 +20,7 @@ namespace TGF.Infrastructure.Services
 
         public async Task<CommentDTO> AddAsync(CommentDTO commentDTO)
         {
-            var c = await _commentRepository.AddAsync(await ToDomain(commentDTO));
+            var c = await _commentRepository.AddAsync(ToDomain(commentDTO));
             return c != null ? ToDTO(c) : null;
         }
 
@@ -52,7 +52,7 @@ namespace TGF.Infrastructure.Services
         {
             if (commentDTO != null)
             {
-                await _commentRepository.UpdateAsync(await ToDomain(commentDTO));
+                await _commentRepository.UpdateAsync(ToDomain(commentDTO));
             }
         }
 
@@ -60,7 +60,7 @@ namespace TGF.Infrastructure.Services
         {
             if (commentDTO != null)
             {
-                await _commentRepository.DelAsync(await ToDomain(commentDTO));
+                await _commentRepository.DelAsync(ToDomain(commentDTO));
             }
         }
 
@@ -74,7 +74,7 @@ namespace TGF.Infrastructure.Services
             };
         }
 
-        private async Task<Comment> ToDomain(CommentDTO cDTO)
+        private Comment ToDomain(CommentDTO cDTO)
         {
             return new Comment()
             {

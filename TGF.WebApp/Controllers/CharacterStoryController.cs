@@ -92,7 +92,7 @@ namespace TGF.WebApp.Controllers
                     using var response = await httpClient.PostAsync(_restpath, content);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 TempData["Message"] = "Błąd dodawania postaci do historii!";
                 TempData["Category"] = "danger";
@@ -117,7 +117,7 @@ namespace TGF.WebApp.Controllers
                     using var response = await httpClient.DeleteAsync($"{_restpath}?cId={cId}&sId={sId}");
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 TempData["Message"] = "Błąd usuwania postaci z historii!";
                 TempData["Category"] = "danger";

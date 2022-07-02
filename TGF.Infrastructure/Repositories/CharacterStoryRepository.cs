@@ -36,7 +36,7 @@ namespace TGF.Infrastructure.Repositories
                     return null;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }

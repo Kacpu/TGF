@@ -10,7 +10,7 @@ namespace TGF.Infrastructure.Services
 {
     public class EmailSender : IEmailSender
     {
-        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
+        public void SendEmailAsync(string email, string subject, string htmlMessage)
         {
             string fromMail = "kacpert757@gmail.com";
             string fromPassword = "phhnfvomtnxfbzsg"; //hasło wygenerować dla poczty z google -> hasła do aplikacji
@@ -29,7 +29,14 @@ namespace TGF.Infrastructure.Services
                 EnableSsl = true,
             };
 
-            smtpClient.Send(mail);
+            try
+            {
+                smtpClient.Send(mail);
+            }
+            catch (Exception)
+            {
+                
+            }
         }
     }
 }
