@@ -3,9 +3,9 @@ Web application with REST API for writing role-play stories with other users. Pr
 
 ## Technologies
 * .NET 5
-* ASP.NET Core
+* ASP.NET Core Web API
+* ASP.NET Core MVC
 * Entity Framework Core
-* Razor Pages
 * MS SQL
 
 ## Features
@@ -17,10 +17,10 @@ Web application with REST API for writing role-play stories with other users. Pr
 * characters and stories management
 * admin panel
 
-## Launch
+## Setup
 
-You need to create a database and set it in the `appsettings.json` file in the `TGF.WebAPI` directory.
+You need to create a database and set `connection string` in the `appsettings.json` file in the `TGF.WebAPI` directory.
 
-To run the API go to the `TGF.WebAPI` directory and type `dotnet run` in the terminal. The API will run on `https://localhost:5001`.
+To run the API, go to the `TGF.WebAPI` directory and type `dotnet run` in the terminal. The API will run on `https://localhost:5001`.
 
-To run the web app go to the `TGF.WebApp` directory and type `dotnet run` in the terminal. The app will run on `https://localhost:5000`.
+To run the web app, go to the `TGF.WebApp` directory and type `dotnet run` in the terminal. The app will run on `https://localhost:5000`.
